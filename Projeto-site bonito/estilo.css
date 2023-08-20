@@ -102,7 +102,7 @@ nav{
 }
 #titulo-principal{
     margin: 12px;
-    margin-left: 18px;
+    margin-left: 14px;
     font-family: var(--fonte-titulo);
     color: white;
     font-size: 1.1em;
@@ -428,9 +428,9 @@ h2.title-pratos{
     margin-top: 100px;
     margin-left: 50px;
     margin-right: 50px;
-    max-width: 600px;
-    height: 600px; /* Ajuste a altura conforme necessário */
-    background-color: rgb(255, 255, 255); /* Cor de fundo da sessão com transparência */
+    max-width: 595px;
+    max-height: 650px;
+    background-color: rgb(255, 255, 255); 
     z-index: 1;
     border-radius: 20px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.733);
@@ -446,7 +446,7 @@ h2.title-pratos{
     padding: 20px;
     text-align: center;
     font-family: var(--fonte-text);
-    font-size: 2em;
+    font-size: clamp(1em, 1em + 1vw, 1.5em);
 }
 .sessao-text p{
     text-align: justify;
@@ -458,6 +458,26 @@ h2.title-pratos{
     margin-top: 10px;
     margin-bottom: 10px;
 }
+@media (max-width: 768px) {
+    .sessao-text {
+        max-width: 90%; /* Use 100% da largura da tela em telas menores */
+        max-height: none; /* Remova a altura máxima em telas menores */
+        margin: 15px;
+        margin-top: 50px;
+        margin-left: 50px;
+        margin-right: 50px; /* Redefina as margens para um valor menor */
+        padding: 8px; /* Redefina o padding para um valor menor */
+    }
+
+    .sessao-text h2 {
+        font-size: 1.2em; /* Redefina o tamanho da fonte do título para um valor menor */
+    }
+
+    .sessao-text p {
+        font-size: 1em; /* Redefina o tamanho da fonte do parágrafo para um valor menor */
+    }
+}
+
 .background-aside-footer{
     width: auto;
     height: 70px;
