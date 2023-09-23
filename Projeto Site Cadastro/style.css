@@ -133,6 +133,9 @@ ul {
     transition: 1.5s ease;
     width: 450px;
 }
+#imagem-logo-site:hover{
+    transform: scale(1.1);
+}
 .opcoes{
     display: flex;
     flex-direction: column;

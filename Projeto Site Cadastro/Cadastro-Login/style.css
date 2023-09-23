@@ -257,5 +257,12 @@ header{
     transition: 1.5s ease;
 }
 .imagens-cadastro {
+    transition: 1.5s ease;
     margin-top: 50px;
+}
+.imagens-cadastro:hover, .imagem-alunos:hover {
+    transform: scale(1.1);
+}
+.imagem-alunos{
+    transition: 1.5s ease;
 }
