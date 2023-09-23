@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
+    <title>Línguas Quebec</title>
+</head>
+<body>
+    <header>
+        <div class="elementos-header">
+            <a href="#"><img src="../assets/image 4.png" alt="logo-site"></a>
+            <h1 style="padding-top: 10px; padding-left: 5px;">Línguas Quebec</h1>
+        </div>
+    </header>
+    <main>
+        <section id="Form">
+            <form action="" method="post" class="formulario">
+                <h2>Seu Login: Professor</h2>
+                <div class="espaco">
+                    <div class="estilo-form">
+                        <label for="id">Id:</label>
+                        <input type="number" name="id" id="id" required placeholder="Ex: 21381237" oninput="javascript: if (this.value.length > 8) this.value = this.value.slice(0, 8);">
+                    </div>
+                    <div class="estilo-form">
+                        <label for="senha">Senha:</label>
+                        <input type="password" name="senha" id="senha" required placeholder="Ex: 21381237">
+                    </div>
+                    <div class="estilo-checkbox">
+                        <input type="checkbox" name="lembrar" id="lembrar">
+                        <label for="lembrar">Lembre-se de mim</label>
+                    </div>
+                </div>
+                <div class="botao-acessar">
+                    <a href=""><input type="submit" value="Acessar" id="acessar"></a>
+                </div>
+                <a href="" class="esqueceu-senha">Esqueceu sua senha?</a>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
