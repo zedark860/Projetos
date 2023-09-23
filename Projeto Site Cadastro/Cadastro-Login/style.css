@@ -24,7 +24,7 @@ header{
     top: 0;
     z-index: 3;
 }
-h2{
+.login{
     color: #FFF;
     text-align: center;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -34,6 +34,18 @@ h2{
     font-weight: 400;
     line-height: normal;
     margin: 40px;
+    transition: 1.5s ease;
+}
+.cadastro{
+    color: #FFF;
+    text-align: center;
+    padding-top: 20px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-family: Roboto Slab;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
     transition: 1.5s ease;
 }
 .elementos-header{
@@ -47,6 +59,7 @@ h2{
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    transition: 1.5s ease;
 }
 #Form{
     display: grid;
@@ -59,6 +72,7 @@ h2{
     border-radius: 47px;
     background: linear-gradient(154deg, rgba(255, 255, 255, 0.32) 2.64%, rgba(128, 0, 255, 0.32) 97.72%), rgba(255, 255, 255, 0.14);
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    margin-bottom: 90px;
 }
 @media screen and (max-width: 553px) {
     .formulario {
@@ -86,7 +100,7 @@ h2{
     background: #FFF;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     height: 38px;
-    color: #969696;
+    color: #000000;
     font-family: Roboto Slab;
     font-size: 13px;
     font-style: normal;
@@ -161,4 +175,87 @@ h2{
 }
 .esqueceu-senha:hover{
     color: #f39200;
+}
+#arrumar-caixa{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+}
+#cadastro-aluno
+{
+    margin-top: 110px;
+    margin-bottom: 50px;
+    width: 561px;
+    height: 704px;
+    border-radius: 47px;
+    background: linear-gradient(154deg, rgba(255, 255, 255, 0.32) 2.64%, rgba(128, 0, 255, 0.32) 97.72%);
+    box-shadow: 5px 5px 4px 0px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+}
+.formulario-cadastro
+{
+    margin-top: 20px;
+    margin-left: -20px;
+    width: 561px;
+    height: 704px;
+    border-radius: 47px;
+    background: #7d4cba;
+    box-shadow: 5px 5px 4px 0px rgba(0, 0, 0, 0.25);
+    z-index: 1;
+}
+@media screen and (max-width: 553px) {
+    .formulario-cadastro {
+        width: 453px;
+        max-width: none;
+
+    }
+}
+@media screen and (max-width: 553px) {
+    #cadastro-aluno {
+        width: 453px;
+        max-width: none;
+
+    }
+}
+@media screen and (max-width: 553px) {
+    .imagem-aluno-cadastro {
+        width: 453px;
+        max-width: none;
+
+    }
+}
+#matricula-cas, #senha-cas, #email, #cpf, #id-cas{
+    padding-left: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    height: 38px;
+    color: #000000;
+    font-family: Roboto Slab;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 40px; 
+    transition: 1.5s ease;
+}
+#numero{
+    padding-left: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    height: 38px;
+    color: #000000;
+    font-family: Roboto Slab;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    transition: 1.5s ease;
+}
+.imagens-cadastro {
+    margin-top: 50px;
 }

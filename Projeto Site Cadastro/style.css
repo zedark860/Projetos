@@ -38,6 +38,7 @@ ul {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    transition: 1.5s ease;
 }
 .botao-entrar{
     margin: 10px;
@@ -106,7 +107,7 @@ ul {
     opacity: 1;
 }
 #parte-prin{
-    margin: 90px;
+    margin: 90px 90px 70px 90px;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -126,6 +127,11 @@ ul {
     font-weight: 400;
     line-height: normal;
     filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.187));
+    transition: 1.5s ease;
+}
+#imagem-logo-site{
+    transition: 1.5s ease;
+    width: 450px;
 }
 .opcoes{
     display: flex;
@@ -136,13 +142,20 @@ ul {
     background: linear-gradient(155deg, rgba(255, 0, 0, 0.32) 1.41%, rgba(128, 0, 255, 0.32) 98.76%);
     box-shadow: 8px 8px 4px 0px rgba(0, 0, 0, 0.35);
     width: 465px;
-    height: 680px;
+    height: 620px;
     flex-shrink: 0;
     color: white;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     font-family: 'Roboto Slab', serif;
     text-align: center;
 }
+@media screen and (max-width: 553px) {
+    .opcoes{
+       width: 433px;
+       max-width: none;
+   }
+}
+
 .caixa-flex-botoes{
     display: flex;
     flex-direction: column;
@@ -218,6 +231,7 @@ footer{
     font-style: 'Roboto Slab', serif;
     color: rgba(0, 25, 248, 0.61);
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    transition: 1.5s ease
 }
 .color-a{
     color: white;
@@ -226,4 +240,3 @@ footer{
 .color-a:hover{
     color: #f39200;
 }
-

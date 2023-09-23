@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línguas Quebec</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="../assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="elementos-header">
+            <a href="../index.html"><img src="../assets/image 4.png" alt="logo-site"></a>
+            <h1 style="padding-top: 10px; padding-left: 5px;">Línguas Quebec</h1>
+        </div>
+    </header>
+    <main>
+        <section id="arrumar-caixa">
+            <section id="cadastro-aluno">
+                <form action="" method="post" class="formulario-cadastro">
+                    <h2 class="cadastro">Cadastro Aluno</h2>
+                    <div class="estilo-form">
+                        <label for="matricula">Matrícula:</label>
+                        <input type="number" name="matricula" id="matricula-cas" required placeholder="Ex: 98765432" oninput="javascript: if (this.value.length > 8) this.value = this.value.slice(0, 8);">
+                    </div>
+                    <div class="estilo-form">
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" id="email" required placeholder="Ex: email@gmail.com">
+                    </div>
+                    <div class="estilo-form">
+                        <label for="senha">Senha:</label>
+                        <input type="password" name="senha" id="senha-cas" required placeholder="Ex: joao123">
+                    </div>
+                    <div class="estilo-form">
+                        <label for="cpf">Cpf:</label>
+                        <input type="text" name="cpf" id="cpf" required placeholder="Ex: 063.482.846-03" oninput="formatarCPF(this)" maxlength="14">
+                    </div>
+                    <div class="estilo-form">
+                        <label for="numero">Número:</label>
+                        <input type="text" name="numero" id="numero" required placeholder="Ex: (32)98459-8417" oninput="formatarNumero(this);" maxlength="14">
+                    </div>
+                    <div class="botao-acessar">
+                        <a href="#"><input type="submit" value="Cadastrar" id="acessar"></a>
+                    </div>
+                </form>
+            </section>
+            <img src="../assets/imagem alunos.png" alt="imagem-alunos">
+        </section>
+    </main>
+    <script src="Index.js"></script>
+</body>
+</html>
