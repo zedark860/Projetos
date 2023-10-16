@@ -27,6 +27,23 @@ header{
 ul {
     list-style: none;
 }
+footer {
+    box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-top: 4px solid #783CC3;
+    background-color: #ffffff;
+    height: 67px;
+    width: 100%;
+}
+#parte-prin{
+    margin: 90px 90px 70px 90px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+.divrodape {
+    margin: 122px 0 0 0;
+}
 .elementos-header{
     padding-top: 10px;
     padding-left: 7px;
@@ -106,13 +123,6 @@ ul {
     height: auto;
     opacity: 1;
 }
-#parte-prin{
-    margin: 90px 90px 70px 90px;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 50px;
-}
 .imagem-prin{
     display: flex;
     flex-direction: column;
@@ -122,7 +132,7 @@ ul {
     color: #FFF;
     text-align: center;
     font-family: 'Roboto Slab', serif;
-    font-size: 36px;
+    font-size: 32px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -131,7 +141,7 @@ ul {
 }
 #imagem-logo-site{
     transition: 1.5s ease;
-    width: 450px;
+    width: 400px;
 }
 #imagem-logo-site:hover{
     transform: scale(1.1);
@@ -154,11 +164,10 @@ ul {
 }
 @media screen and (max-width: 553px) {
     .opcoes{
-       width: 433px;
+       width: 370px;
        max-width: none;
    }
 }
-
 .caixa-flex-botoes{
     display: flex;
     flex-direction: column;
@@ -217,15 +226,6 @@ ul {
     transform: translate(-5%,-5%);
     background-color: white;
     color: black;
-}
-footer{
-    box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.25);
-    border-top: 4px solid #783CC3;
-    background-color: #ffffff;
-    height: 67px;
-    left: 0;
-    bottom: 0;
-    width: 100%;
 }
 #diretos{
     margin: 25px;
