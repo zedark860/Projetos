@@ -17,8 +17,12 @@
     <main>
         <section id="arrumar-caixa">
             <section id="cadastro-aluno">
-                <form action="" method="post" class="formulario-cadastro">
+                <form action="./Arquivos-PHP/cadastro-professor.php" method="post" class="formulario-cadastro">
                     <h2 class="cadastro">Cadastro Professor</h2>
+                    <div class="estilo-form">
+                        <label for="nome">Nome:</label>
+                        <input type="text" name="nome" id="nome" placeholder="Ex: João Oliveira" required>
+                    </div>
                     <div class="estilo-form">
                         <label for="id">Id:</label>
                         <input type="number" name="id" id="id-cas" required placeholder="Ex: 98487664" oninput="javascript: if (this.value.length > 8) this.value = this.value.slice(0, 8);">
