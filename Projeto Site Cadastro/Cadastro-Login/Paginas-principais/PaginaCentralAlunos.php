@@ -82,9 +82,14 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
             xhr.open('GET', 'logout.php', true)
             xhr.send()
         }
-        window.addEventListener('beforeunload', function() {
-            logoutOnPageClose()
-        })
+        // Adicione o evento 'beforeunload' para fazer logout apenas quando a página é fechada
+        window.addEventListener('beforeunload', function(event) {
+            var target = event.target
+            if (target.tagName === 'A' && target.getAttribute('href') === '../../index.html?logout=true') {
+                logoutOnPageClose()
+            }
+        });
     </script>
+    <script src="../Index.js"></script>
 </body>
 </html>

@@ -30,7 +30,7 @@
                         <input type="password" name="senha" id="senha" required placeholder="Ex: joao123">
                     </div>
                     <div class="estilo-checkbox">
-                        <input type="checkbox" name="lembrar" id="lembrar">
+                        <input type="checkbox" name="lembrar" id="lembrar" onclick="mostrarSenha()">
                         <label for="lembrar">Ver senha</label>
                     </div>
                 </div>
@@ -40,6 +40,18 @@
                 <a href="" class="esqueceu-senha">Esqueceu sua senha?</a>
             </form>
         </section>
+        <script>
+                function mostrarSenha() {
+                    var senhaInput = document.getElementById('senha');
+                    var lembrarCheckbox = document.getElementById('lembrar');
+
+                    if (lembrarCheckbox.checked) {
+                        senhaInput.type = 'text'; // Altera o tipo de entrada para "text" (mostrar senha)
+                    } else {
+                        senhaInput.type = 'password'; // Altera o tipo de entrada de volta para "password" (ocultar senha)
+                    }
+                }
+        </script>
     </main>
 </body>
 </html>

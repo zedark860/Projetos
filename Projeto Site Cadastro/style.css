@@ -42,7 +42,7 @@ footer {
     gap: 50px;
 }
 .divrodape {
-    margin: 122px 0 0 0;
+    margin: 50px 0 0 0;
 }
 .elementos-header{
     padding-top: 10px;
@@ -141,7 +141,7 @@ footer {
 }
 #imagem-logo-site{
     transition: 1.5s ease;
-    width: 400px;
+    width: 375px;
 }
 #imagem-logo-site:hover{
     transform: scale(1.1);
@@ -243,3 +243,4 @@ footer {
 .color-a:hover{
     color: #f39200;
 }
+  

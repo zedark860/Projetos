@@ -30,3 +30,22 @@ function formatarNumero(campo) {
     // Define o valor formatado de volta no campo
     campo.value = numero;
 }
+
+    // Selecionar o elemento de entrada de texto pelo ID
+var nomeInput = document.getElementById('nome');
+
+    // Adicionar um ouvinte de evento para o evento "input" no campo de entrada
+nomeInput.addEventListener('input', function () {
+        // Obter o valor atual do campo de entrada
+    var valor = nomeInput.value;
+
+        // Substituir todos os caracteres não alfabéticos por uma string vazia
+    valor = valor.replace(/[^a-zA-ZÀ-ú\s]/g, '');
+
+        // Atualizar o valor do campo de entrada apenas com os caracteres válidos
+     nomeInput.value = valor;
+});
+
+function mostrarOcultarSenha(checkbox, senhaInput) {
+    senhaInput.type = checkbox.checked ? 'text' : 'password';
+}
