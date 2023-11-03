@@ -24,11 +24,20 @@ header{
     top: 0;
     z-index: 3;
 }
+h3{
+    font-weight: bold;
+    color: rgba(0, 25, 248, 0.61);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+h2{
+    color: rgba(0, 25, 248, 0.61);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
 .login{
     color: #FFF;
     text-align: center;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 35px;
     font-style: normal;
     font-weight: 400;
@@ -41,7 +50,7 @@ header{
     text-align: center;
     padding-top: 20px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 32px;
     font-style: normal;
     font-weight: 400;
@@ -55,7 +64,7 @@ header{
     color: rgba(0, 25, 248, 0.61);
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     font-family: 'Roboto Slab', serif;
-    font-size: 13px;
+    font-size: 70%;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -87,7 +96,7 @@ header{
     flex-direction: column;
     color: #FFF;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 21px;
     font-style: normal;
     font-weight: 400;
@@ -101,7 +110,7 @@ header{
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     height: 38px;
     color: #000000;
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
@@ -122,7 +131,7 @@ header{
     flex-direction: column;
     color: #FFF;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 15px;
     font-style: normal;
     font-weight: 400;
@@ -148,7 +157,7 @@ header{
     color: #FFF;
     text-align: center;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 21px;
     font-style: normal;
     font-weight: 400;
@@ -166,7 +175,7 @@ header{
     color: #FFF;
     text-align: center;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 19px;
     font-style: normal;
     font-weight: 400;
@@ -249,7 +258,7 @@ header{
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     height: 38px;
     color: #000000;
-    font-family: Roboto Slab;
+    font-family: 'Roboto Slab';
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
@@ -265,4 +274,48 @@ header{
 }
 .imagem-alunos{
     transition: 1.5s ease;
+}
+.pagina-central-centralizada{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: row;
+    gap: 35px;
+    margin-bottom: 20px;
+}
+.caixas-pag-prin{
+    height: 270px;
+    width: 290px;
+    background-color: white;
+    margin-top: 100px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    flex-direction: column;
+}
+.botao-acesso{
+    border-radius: 18px;
+    border: 0;
+    background: #783CC3;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    width: 124px;
+    height: 43px;
+    transition: 1s ease;
+}
+.botao-acesso:hover{
+    transform: translate(-5%,-5%);
+}
+.botao-acesso a{
+    color: #FFF;
+    text-align: center;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-family: 'Roboto Slab';
+    text-decoration: none;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 }

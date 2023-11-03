@@ -2,7 +2,7 @@
 
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "1234";
 $database = "cadastroelogin";
 
 $conn = new mysqli($servername, $username, $password, $database);
@@ -27,16 +27,24 @@ try {
     $conn->query($sql_alunos);
 
     // Inserir dados na tabela "dados_alunos" relacionados à matrícula
-    $sql_dados_alunos = "INSERT INTO dados_alunos (matricula_aluno, email_aluno, senha_aluno, cpf_aluno, numero_aluno) VALUES ('$matricula', '$email', '$senha', '$cpf', '$numero')";
+    $sql_dados_alunos = "INSERT INTO dados_alunos (matricula_aluno, email_aluno, senha_aluno, cpf_aluno, numero_aluno, nome_aluno) VALUES ('$matricula', '$email', '$senha', '$cpf', '$numero', '$nome')";
     $conn->query($sql_dados_alunos);
 
     // Confirma a transação
     $conn->commit();
-    echo "Cadastro realizado com sucesso.";
+
+    // Redireciona o usuário para outra página
+    echo "<script>";
+    echo 'alert("Cadastro bem-sucedido!");';
+    echo 'window.location.href = "../Paginas-principais/PaginaCentralAlunos.php";';
+    echo '</script>';
+
+    session_start();
+    $_SESSION['matricula'] = $matricula;
+
 } catch (Exception $e) {
     // Em caso de erro, desfaz a transação
     $conn->rollback();
-    echo "Erro ao cadastrar: " . $e->getMessage();
 }
 
 $conn->close();

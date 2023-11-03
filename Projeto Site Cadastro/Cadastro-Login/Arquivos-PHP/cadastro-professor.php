@@ -2,7 +2,7 @@
 
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "1234";
 $database = "cadastroelogin";
 
 $conn = new mysqli($servername, $username, $password, $database);
@@ -27,16 +27,24 @@ try {
     $conn->query($sql_professores);
 
     // Inserir dados na tabela "dados_professores" relacionados ao "id"
-    $sql_dados_professores = "INSERT INTO dados_professores (id_professor, email_professor, senha_professor, cpf_professor, numero_professor) VALUES ('$id', '$email', '$senha', '$cpf', '$numero')";
+    $sql_dados_professores = "INSERT INTO dados_professores (id_professor, email_professor, senha_professor, cpf_professor, numero_professor, nome_professor) VALUES ('$id', '$email', '$senha', '$cpf', '$numero', '$nome')";
     $conn->query($sql_dados_professores);
 
     // Confirma a transação
     $conn->commit();
-    echo "Cadastro de professor realizado com sucesso.";
+
+    // Redireciona o usuário para outra página
+    echo "<script>";
+    echo 'alert("Cadastro bem-sucedido!");';
+    echo 'window.location.href = "../Paginas-principais/PaginaCentralProfessores.php";';
+    echo '</script>';
+
+    session_start();
+    $_SESSION['id'] = $id;
+
 } catch (Exception $e) {
     // Em caso de erro, desfaz a transação
     $conn->rollback();
-    echo "Erro ao cadastrar professor: " . $e->getMessage();
 }
 
 $conn->close();
