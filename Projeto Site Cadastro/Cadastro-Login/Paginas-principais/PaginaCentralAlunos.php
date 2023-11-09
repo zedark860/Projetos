@@ -43,37 +43,37 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
         <div class="caixas-pag-prin">
             <img src="../../assets/image frequenci.png" alt="imagem Frequência">
             <h3>Frequência</h3>
-            <button type="button" class="botao-acesso"><a href="">Acessar</a></button>
+            <button type="button" class="botao-acesso"><a href="Paginas-de-funcoes-Alunos/Frequencia-Alunos.html">Acessar</a></button>
         </div>
         <div class="caixas-pag-prin">
             <img src="../../assets/image notas.png" alt="imagem Notas">
             <h3>Notas</h3>
-            <button type="button" class="botao-acesso"><a href="">Acessar</a></button>
+            <button type="button" class="botao-acesso"><a href="Paginas-de-funcoes-Alunos/Notas-Alunos.html">Acessar</a></button>
         </div>
         <div class="caixas-pag-prin">
             <img src="../../assets/image calendario.png" alt="">
             <h3>Calendário</h3>
-            <button type="button" class="botao-acesso"><a href="">Acessar</a></button>
+            <button type="button" class="botao-acesso"><a href="Paginas-de-funcoes-Alunos/Calendario-Alunos.html">Acessar</a></button>
         </div>
         <div class="caixas-pag-prin">
             <img src="../../assets/image exercicio.png" alt="">
             <h3>Exercícios</h3>
-            <button type="button" class="botao-acesso"><a href="">Acessar</a></button>
+            <button type="button" class="botao-acesso"><a href="Paginas-de-funcoes-Alunos/Exercicios-Alunos.html">Acessar</a></button>
         </div>
         <div class="caixas-pag-prin">
             <img src="../../assets/image mural.png" alt="">
             <h3>Mural</h3>
-            <button type="button" class="botao-acesso"><a href="">Acessar</a></button>
+            <button type="button" class="botao-acesso"><a href="Paginas-de-funcoes-Alunos/Mural-Alunos.html">Acessar</a></button>
         </div>
         <div class="caixas-pag-prin">
             <img src="../../assets/image cursos.png" alt="">
             <h3>Cursos</h3>
-            <button type="button" class="botao-acesso"><a href="">Acessar</a></button>
+            <button type="button" class="botao-acesso"><a href="Paginas-de-funcoes-Alunos/Cursos-Alunos.html">Acessar</a></button>
         </div>
         <div class="caixas-pag-prin">
             <img src="../../assets/image suporte.png" alt="">
             <h3>Suporte</h3>
-            <button type="button" class="botao-acesso"><a href="">Acessar</a></button>
+            <button type="button" class="botao-acesso"><a href="Suporte.html">Acessar</a></button>
         </div>
     </main>
     <script>
