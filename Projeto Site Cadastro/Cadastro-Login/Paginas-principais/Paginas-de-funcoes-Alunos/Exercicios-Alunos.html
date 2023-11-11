@@ -15,6 +15,40 @@
                 <h1 style="padding-top: 10px; padding-left: 5px;">Línguas Quebec</h1>
             </div>
         </div>
+        <div style="display: flex; align-items: center; gap: 2px;">
+            <img id="menu-toggle" src="../../../assets/icon _menu_.png" alt="" style="height: 40px; margin-right: 15px;">
+            <div id="menu-lateral" class="menu-lateral">
+                <!-- Conteúdo do menu aqui -->
+            </div>
+        </div>
     </header>
+    <script>
+    var menuToggle = document.getElementById('menu-toggle');
+    var menuLateral = document.getElementById('menu-lateral');
+
+    // Adicione um ouvinte de clique à imagem para abrir o menu
+    menuToggle.addEventListener('click', function(event) {
+        event.stopPropagation(); // Impede que o clique seja propagado para o documento
+        if (menuLateral.style.width === '0px' || menuLateral.style.width === '') {
+            menuLateral.style.width = '300px';
+            menuLateral.style.borderLeft = '3px solid #5c12b7';
+        } else {
+            menuLateral.style.width = '0';
+        }
+    });
+
+    // Adicione um ouvinte de clique ao documento inteiro
+    document.addEventListener('click', function(event) {
+        // Verifique se o clique não ocorreu dentro do menu
+        if (menuLateral.style.width !== '0px' && event.target !== menuLateral) {
+            menuLateral.style.width = '0';
+        }
+    });
+
+    // Impedir que cliques no menu sejam propagados para o documento
+    menuLateral.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+    </script>
 </body>
 </html>

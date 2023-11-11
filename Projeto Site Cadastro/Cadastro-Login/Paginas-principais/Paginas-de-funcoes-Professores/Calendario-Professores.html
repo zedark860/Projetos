@@ -16,5 +16,117 @@
             </div>
         </div>
     </header>
+    <main class="pagina-central-centralizada">
+        <div class="calendario-estilo">
+            <h2 style="color: white; font-size: 40px;">Calendário</h2>
+            <table id="calendario">
+                <thead>
+                  <tr>
+                    <th>Domingo</th>
+                    <th>Segunda</th>
+                    <th>Terça</th>
+                    <th>Quarta</th>
+                    <th>Quinta</th>
+                    <th>Sexta</th>
+                    <th>Sábado</th>
+                  </tr>
+                </thead>
+                <tbody id="semana1">
+                  <!-- Use JavaScript para preencher os dias do mês aqui -->
+                </tbody>
+              </table>
+              <div>
+                <button id="mes-anterior" class="botao-acesso">Mês Anterior</button>
+                <span id="mes-ano" style="color: white; margin: 0px 20px; font-size: 20px;"></span>
+                <button id="proximo-mes" class="botao-acesso">Próximo Mês</button>
+              </div>
+              <div>
+                <input type="text" id="descricao" placeholder="Descrição">
+                <button id="adicionar">Adicionar Descrição</button>
+              </div>
+        </div>
+    </main>
+    <script>
+    const calendario = document.getElementById('calendario');
+    const descricaoInput = document.getElementById('descricao');
+    const adicionarButton = document.getElementById('adicionar');
+    const mesAno = document.getElementById('mes-ano');
+
+    let descricao = '';
+    let dataAtual = new Date();
+    let mesAtual = dataAtual.getMonth() + 1;
+    let anoAtual = dataAtual.getFullYear();
+
+    function criarCalendario(mes, ano) {
+      dataAtual = new Date(ano, mes - 1, 1);
+      mesAtual = dataAtual.getMonth() + 1;
+      anoAtual = dataAtual.getFullYear();
+
+      mesAno.textContent = `${mesAtual}/${anoAtual}`;
+
+      const primeiroDia = new Date(ano, mes - 1, 1);
+      const ultimoDia = new Date(ano, mes, 0);
+      const diasNoMes = ultimoDia.getDate();
+
+      let dia = 1;
+
+      const semana1 = document.getElementById('semana1');
+      semana1.innerHTML = ''; // Limpa a primeira semana da tabela
+
+      for (let i = 0; i < 6; i++) {
+        const row = document.createElement('tr');
+        for (let j = 0; j < 7; j++) {
+          if ((i === 0 && j < primeiroDia.getDay()) || dia > diasNoMes) {
+            const cell = document.createElement('td');
+            row.appendChild(cell);
+          } else {
+            const cell = document.createElement('td');
+            cell.textContent = dia;
+            cell.dataset.descricao = ''; // Inicializa a descrição vazia
+            cell.addEventListener('click', adicionarDescricao);
+            row.appendChild(cell);
+            dia++;
+          }
+        }
+        semana1.appendChild(row);
+      }
+    }
+
+    function adicionarDescricao(event) {
+      const cell = event.target;
+      descricao = descricaoInput.value;
+
+      // Verifica se há uma descrição antes de adicionar a classe
+      if (descricao.trim() !== '') {
+        cell.dataset.descricao = descricao;
+        cell.textContent = cell.textContent + '\n' + descricao;
+
+        // Adiciona a classe "tem-descricao" para a célula com descrição
+        cell.classList.add('tem-descricao');
+
+        descricaoInput.value = '';
+      }
+    }
+
+    document.getElementById('mes-anterior').addEventListener('click', function() {
+      mesAtual--;
+      if (mesAtual < 1) {
+        mesAtual = 12;
+        anoAtual--;
+      }
+      criarCalendario(mesAtual, anoAtual);
+    });
+
+    document.getElementById('proximo-mes').addEventListener('click', function() {
+      mesAtual++;
+      if (mesAtual > 12) {
+        mesAtual = 1;
+        anoAtual++;
+      }
+      criarCalendario(mesAtual, anoAtual);
+    });
+
+    criarCalendario(mesAtual, anoAtual); // Inicializa o calendário com o mês atual
+    </script>
 </body>
 </html>

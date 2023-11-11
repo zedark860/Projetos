@@ -15,6 +15,106 @@
                 <h1 style="padding-top: 10px; padding-left: 5px;">Línguas Quebec</h1>
             </div>
         </div>
+        <div style="display: flex; align-items: center; gap: 2px;">
+            <img id="menu-toggle" src="../../../assets/icon _menu_.png" alt="" style="height: 40px; margin-right: 15px;">
+            <div id="menu-lateral" class="menu-lateral" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <h2 style="margin-top: 20px;">Turmas</h1>
+                <a href="#">Turma 1</a>
+                <a href="#">Turma 2</a>
+                <a href="#">Turma 3</a>
+            </div>
+        </div>
     </header>
+    <main class="pagina-central-centralizada">
+        <section class="estilo-exercicios">
+            <div>
+                <h2 style="font-size: 30px;">Deseja postar um exercício?</h2>
+                <button id="simButton">Sim</button>
+                <button id="naoButton">Não</button>
+            </div>
+            <div id="exercicioForm" style="display: none;">
+                <h2 style="text-align: center;">Postar Exercício</h2>
+                <input type="file" id="fileInput">
+                <button id="postarButton">Postar</button>
+                <p id="mensagemPostagem"></p> <!-- Elemento para mostrar a mensagem -->
+            </div>
+            <div id="exerciciosPostados" style="display: none;">
+                <h2>Exercícios Postados</h2>
+                <!-- Lista de exercícios postados -->
+            </div>
+        </section>
+    </main>
+    <script>
+        var menuToggle = document.getElementById('menu-toggle');
+        var menuLateral = document.getElementById('menu-lateral');
+
+        // Adicione um ouvinte de clique à imagem para abrir o menu
+        menuToggle.addEventListener('click', function(event) {
+            event.stopPropagation(); // Impede que o clique seja propagado para o documento
+            if (menuLateral.style.width === '0px' || menuLateral.style.width === '') {
+                menuLateral.style.width = '300px';
+                menuLateral.style.borderLeft = '3px solid #5c12b7';
+            } else {
+                menuLateral.style.width = '0';
+            }
+        });
+
+        // Adicione um ouvinte de clique ao documento inteiro
+        document.addEventListener('click', function(event) {
+            // Verifique se o clique não ocorreu dentro do menu
+            if (menuLateral.style.width !== '0px' && event.target !== menuLateral) {
+                menuLateral.style.width = '0';
+            }
+        });
+
+        // Impedir que cliques no menu sejam propagados para o documento
+        menuLateral.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        var opcaoSelecionada = null; // Para rastrear a opção selecionada atualmente
+
+        // Botão "Sim" - Mostra o formulário de postagem de exercício e desabilita o botão "Não"
+        document.getElementById('simButton').addEventListener('click', function() {
+            if (opcaoSelecionada) {
+                opcaoSelecionada.style.display = 'none'; // Esconde a opção anterior
+            }
+            opcaoSelecionada = document.getElementById('exercicioForm'); // Define a opção selecionada
+            opcaoSelecionada.style.display = 'block'; // Mostra o formulário de postagem de exercício
+            this.disabled = true; // Desabilita o botão "Sim"
+            document.getElementById('naoButton').disabled = true; // Desabilita o botão "Não"
+        });
+
+        // Botão "Não" - Mostra exercícios já postados e desabilita o botão "Sim"
+        document.getElementById('naoButton').addEventListener('click', function() {
+            if (opcaoSelecionada) {
+                opcaoSelecionada.style.display = 'none'; // Esconde a opção anterior
+            }
+            opcaoSelecionada = document.getElementById('exerciciosPostados'); // Define a opção selecionada
+            opcaoSelecionada.style.display = 'block'; // Mostra a seção de exercícios postados
+            this.disabled = true; // Desabilita o botão "Não"
+            document.getElementById('simButton').disabled = true; // Desabilita o botão "Sim"
+        });
+
+        // Botão "Postar" - Lida com o envio do exercício e exibe uma mensagem
+        document.getElementById('postarButton').addEventListener('click', function() {
+            var mensagem = document.getElementById('mensagemPostagem');
+            var fileInput = document.getElementById('fileInput');
+            
+            // Verifica se um arquivo foi selecionado no input file
+            if (fileInput.files.length > 0) {
+                mensagem.textContent = 'Exercício postado com sucesso!';
+                mensagem.style.color = 'green'; // Define a cor da mensagem
+
+                // Desabilita os botões "Sim" e "Não" após o post
+                document.getElementById('simButton').disabled = true;
+                document.getElementById('naoButton').disabled = true;
+                this.disabled = true; // Desabilita o botão "Postar"
+            } else {
+                mensagem.textContent = 'Por favor, selecione um documento antes de postar.';
+                mensagem.style.color = 'red'; // Define a cor da mensagem
+            }
+        });
+    </script>
 </body>
 </html>
