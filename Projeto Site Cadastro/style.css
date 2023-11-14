@@ -8,7 +8,7 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 body{
-    background: linear-gradient(236deg, rgba(60, 76, 238, 0.76) 15.31%, rgba(102, 52, 172, 0.54) 100%);
+    background-image: linear-gradient(247deg, rgba(0, 25, 248, 0.76) 14.18%, rgba(50, 0, 114, 0.54) 100%);
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
@@ -24,71 +24,26 @@ header{
     top: 0;
     z-index: 3;
 }
-h3{
-    font-weight: bold;
-    color: rgba(0, 25, 248, 0.61);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+ul {
+    list-style: none;
 }
-h2{
-    color: rgba(0, 25, 248, 0.61);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+footer {
+    box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-top: 4px solid #783CC3;
+    background-color: #ffffff;
+    height: 67px;
+    width: 100%;
+    margin-top: 122px;
 }
-table{
-    border-collapse: collapse;
-    border-radius: 10px; 
-    overflow: hidden; 
-    box-shadow: -1px 1px 4px 2px rgba(0, 0, 0, 0.25);
-    background-color: white;
-    color:rgba(36, 51, 223, 0.76);
+#parte-prin{
+    margin: 90px 90px 70px 90px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 50px;
 }
-table, th, td {
-    border: none;
-}
-th, td {
-    transition: 1.2s ease;
-    padding: 5px;
-    border-radius: 10px;
-}
-th:hover{
-    transform: translate(-5%,-5%);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-td {
-    cursor: pointer;
-}
-.tem-descricao {
-    transition: 1.2s ease;
-    background-color: #783CC3;
-    color: white;
-}
-.tem-descricao:hover{
-    transform: translate(-5%,-5%);
-    border-radius: 10px;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-}
-.login{
-    color: #FFF;
-    text-align: center;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto Slab';
-    font-size: 35px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin: 40px;
-    transition: 1.5s ease;
-}
-.cadastro{
-    color: #FFF;
-    text-align: center;
-    padding-top: 20px;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto Slab';
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    transition: 1.5s ease;
+.divrodape {
+    margin: 50px 0 0 0;
 }
 .elementos-header{
     padding-top: 10px;
@@ -103,405 +58,190 @@ td {
     line-height: normal;
     transition: 1.5s ease;
 }
-#Form{
-    display: grid;
-    place-items: center;
-}
-.formulario{
-    margin-top: 225px;
-    width: 503px;
-    height: 524px;
-    border-radius: 47px;
-    background: linear-gradient(154deg, rgba(255, 255, 255, 0.32) 2.64%, rgba(128, 0, 255, 0.32) 97.72%), rgba(255, 255, 255, 0.14);
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    margin-bottom: 40px;
-
-}
-@media screen and (max-width: 553px) {
-    .formulario {
-        width: 453px;
-        max-width: none;
-    }
-}
-.estilo-form{
-    margin-left: 40px;
-    margin-right: 40px;
-    display: flex;
-    flex-direction: column;
-    color: #FFF;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto Slab';
-    font-size: 21px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-#matricula, #senha, #id{
-    padding-left: 10px;
-    border: none;
-    border-radius: 10px;
-    background: #FFF;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    height: 38px;
-    color: #000000;
-    font-family: 'Roboto Slab';
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-bottom: 50px; 
-    transition: 1.5s ease;
-}
-#lembrar{
-    width: 18px;
-    height: 16px;
-    margin-right: 6px;
-    border: none;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-}
-.estilo-checkbox{
-    margin-left: 50px;
-    margin-right: 40px;
-    flex-direction: column;
-    color: #FFF;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto Slab';
-    font-size: 15px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-.espaco{
-    display: flex;
-    flex-direction: column;
-}
-.botao-acessar{
-    display: grid;
-    place-items: center;
-}
-#acessar{
-    cursor: pointer;
-    margin-top: 25px;
-    width: 150px;
-    height: 54px;
-    border-radius: 18px;
-    border: none;
+.botao-entrar{
+    margin: 10px;
+    border-radius: 24px;
+    border: 0;
     background: #783CC3;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    color: #FFF;
+    box-shadow: 0px 4px 4px 1px rgba(0, 0, 0, 0.25);
+    width: 130px;
+    height: 45px;
+    padding: 10px;
+    color: #EDEDED;
     text-align: center;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto Slab';
-    font-size: 21px;
+    font-family: 'Roboto Slab', serif;
+    font-size: 22px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    transition: 1.5s ease;
 }
-#acessar:hover{
-    transform: translate(-10%,-10%);
-    background-color: #5c12b7;
-}
-.esqueceu-senha{
-    display: grid;
-    place-items: center;
-    margin: 30px;
-    color: #FFF;
-    text-align: center;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto Slab';
-    font-size: 19px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    transition: 1.5s ease;
-}
-.esqueceu-senha:hover{
-    color: #f39200;
-}
-#arrumar-caixa{
+.drop-menu{
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
     align-items: center;
+    flex-direction: column;
+    transition-duration: 2s;
 }
-#cadastro-aluno
-{
-    margin-top: 100px;
-    margin-bottom: 50px;
-    margin-right: 30px;
-    margin-left: 11px;
-    width: 561px;
-    height: 654px;
-    border-radius: 47px;
-    background: linear-gradient(154deg, rgba(255, 255, 255, 0.32) 2.64%, rgba(128, 0, 255, 0.32) 97.72%);
-    box-shadow: 5px 5px 4px 0px rgba(0, 0, 0, 0.25);
+#drop-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 2s ease;
     z-index: 2;
 }
-.formulario-cadastro
-{
-    margin-top: 20px;
-    margin-left: 20px;
-    width: 561px;
-    height: 654px;
-    border-radius: 47px;
-    background: #7d4cba;
-    box-shadow: 5px 5px 4px 0px rgba(0, 0, 0, 0.158);
-    z-index: 1;
-}
-@media screen and (max-width: 553px) {
-    .formulario-cadastro {
-        width: 453px;
-        max-width: none;
-
-    }
-}
-@media screen and (max-width: 553px) {
-    #cadastro-aluno {
-        width: 453px;
-        max-width: none;
-
-    }
-}
-@media screen and (max-width: 553px) {
-    .imagem-aluno-cadastro {
-        width: 453px;
-        max-width: none;
-
-    }
-}
-#matricula-cas, #senha-cas, #email, #cpf, #id-cas, #nome{
-    padding-left: 10px;
-    border: none;
-    border-radius: 10px;
-    background: #FFF;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    height: 38px;
-    color: #000000;
-    font-family: Roboto Slab;
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    margin-bottom: 25px; 
-    transition: 1.5s ease;
-}
-#numero{
-    padding-left: 10px;
-    border: none;
-    border-radius: 10px;
-    background: #FFF;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    height: 38px;
-    color: #000000;
-    font-family: 'Roboto Slab';
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    transition: 1.5s ease;
-}
-.imagens-cadastro {
-    transition: 1.5s ease;
-    margin-top: 50px;
-}
-.imagens-cadastro:hover, .imagem-alunos:hover {
+#drop-button:hover{
     transform: scale(1.1);
 }
-.imagem-alunos{
-    transition: 1.5s ease;
-}
-.pagina-central-centralizada{
+.menu-class{
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    flex-direction: row;
-    gap: 35px;
-    margin-bottom: 20px;
+    position: relative;
+    top: -45px;
+    z-index: 1;
 }
-.caixas-pag-prin{
-    height: 270px;
-    width: 290px;
-    background-color: white;
-    margin-top: 100px;
-    border-radius: 20px;
+#menu-list{
+    text-align: center;
+    background-color: #783CC3;
+    width: 130px;
+    line-height: 28px;
+    padding-top: 40px;
+    padding-bottom: 5px;
+    border-radius: 20px 20px 18px 18px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    height: 0;
+    opacity: 0;
+    transition: height 0.4s ease, opacity 0.4s ease;
+}
+#menu-list a{
+    color: #ffffff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    transition: 0.5s ease;
+}
+#menu-list a:hover{
+    color: #828282;
+    transition-duration: 0.5s;
+}
+#menu-list.open {
+    height: auto;
+    opacity: 1;
+}
+.imagem-prin{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 7px;
-    flex-direction: column;
-}
-.botao-acesso{
-    border-radius: 18px;
-    color: white;
-    font-family: 'Roboto Slab';
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.37);
-    border: 0;
-    background: #783CC3;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 124px;
-    height: 43px;
-    transition: 1s ease;
-}
-.botao-acesso:hover{
-    transform: translate(-5%,-5%);
-    background-color: #5c12b7;
-}
-.botao-acesso a{
+    flex-shrink: 0;
     color: #FFF;
     text-align: center;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-family: 'Roboto Slab';
-    text-decoration: none;
-    font-size: 18px;
+    font-family: 'Roboto Slab', serif;
+    font-size: 32px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.187));
+    transition: 1.5s ease;
 }
-
-.calendario-estilo{
-    margin-top: 180px;
+#imagem-logo-site{
+    transition: 1.5s ease;
+    width: 375px;
+}
+#imagem-logo-site:hover{
+    transform: scale(1.1);
+}
+.opcoes{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
-    height: 650px;
-    width: 650px;
-    font-family: 'Roboto Slab';
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    margin-top: 20px;
+    border-radius: 58px;
     background: linear-gradient(155deg, rgba(255, 0, 0, 0.32) 1.41%, rgba(128, 0, 255, 0.32) 98.76%);
-}
-
-@media screen and (max-width: 553px) {
-    .calendario-estilo {
-        width: 453px;
-        max-width: none;
-
-    }
-}
-
-#descricao{
-    margin-right: 20px;
-    border: none;
-    border-radius: 20px;
-    padding: 10px;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.13);
-}
-#adicionar{
-    border-radius: 18px;
+    box-shadow: 8px 8px 4px 0px rgba(0, 0, 0, 0.35);
+    width: 465px;
+    height: 620px;
+    flex-shrink: 0;
     color: white;
-    font-family: 'Roboto Slab';
-    border: 0;
-    background: #f39200;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
-    width: 150px;
-    height: 43px;
-    transition: 1s ease;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-family: 'Roboto Slab', serif;
+    text-align: center;
 }
-#adicionar:hover{
-    transform: translate(-5%,-5%);
-    background-color: #c97e0c;
+@media screen and (max-width: 553px) {
+    .opcoes{
+       width: 370px;
+       max-width: none;
+   }
 }
-.menu-lateral {
-    width: 0;
-    background-color: white;
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100%;
-    transition: width 0.3s;
-    overflow-x: hidden;
-    z-index: 2; /* Defina um z-index maior para o menu lateral */
-}
-/* Estilo para o botão de acionamento */
-#menu-toggle {
-    cursor: pointer;
-    z-index: 1; /* Defina um z-index menor para o botão de acionamento */
-    transition: 1s ease;
-}
-#menu-toggle:hover{
-    transform: translate(-5%,-5%);
-}
-.estilo-exercicios{
-    margin-top: 180px;
-    width: 600px;
-    height: 600px;
-    background-color: white;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.13);
-    border-radius: 20px;
+.caixa-flex-botoes{
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
     align-items: center;
+    gap: 30px;
+    margin-bottom: 60px;
 }
-#simButton{
+.botao-1{
+    display: grid;
+    place-items: center;
+    width: 165px;
+    height: 63px;
+    flex-shrink: 0;
     border-radius: 18px;
-    color: white;
-    font-family: 'Roboto Slab';
     border: 0;
-    background: #65bd02;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
-    width: 150px;
-    height: 43px;
-    margin: 15px;
-    font-size: 18px;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    font-family: 'Roboto Slab', serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
     transition: 1s ease;
-    cursor: pointer;
+    color: black;
+    text-decoration: none;
 }
 
-#naoButton{
+.botao-1:hover{
+    cursor: pointer;
+    transform: translate(-5%,-5%);
+    background-color: #262424;
+    color: #FFF;
+}
+.botao-2{
+    display: grid;
+    place-items: center;
+    width: 165px;
+    height: 63px;
+    flex-shrink: 0;
     border-radius: 18px;
-    color: white;
-    font-family: 'Roboto Slab';
     border: 0;
-    background: #bd4002;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
-    width: 150px;
-    height: 43px;
-    margin: 15px;
-    font-size: 18px;
-    transition: 1s ease;
-    cursor: pointer;
-}
-
-#simButton:hover{
-    transform: translate(-5%,-5%);
-}
-
-#naoButton:hover{
-    transform: translate(-5%,-5%);
-}
-
-#postarButton{
-    border-radius: 18px;
+    background: #262424;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    font-family: 'Roboto Slab', serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
     color: white;
-    font-family: 'Roboto Slab';
-    border: 0;
-    background: #783CC3;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
-    width: 150px;
-    height: 35px;
-    margin: 15px;
-    font-size: 14px;
+    text-decoration: none;
     transition: 1s ease;
+}
+.botao-2:hover{
     cursor: pointer;
-}
-
-#postarButton:hover{
     transform: translate(-5%,-5%);
+    background-color: white;
+    color: black;
 }
-
-@media screen and (max-width: 553px) {
-    .estilo-exercicios {
-        width: 453px;
-        max-width: none;
-
-    }
+#diretos{
+    margin: 25px;
+    text-align: center;
+    font-weight: bold;
+    font-style: 'Roboto Slab', serif;
+    color: rgba(0, 25, 248, 0.61);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    transition: 1.5s ease
 }
+.color-a{
+    color: white;
+    transition: 1s ease;
+}
+.color-a:hover{
+    color: #f39200;
+}
+  

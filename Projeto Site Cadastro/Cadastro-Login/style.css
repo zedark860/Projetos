@@ -33,6 +33,39 @@ h2{
     color: rgba(0, 25, 248, 0.61);
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+table{
+    border-collapse: collapse;
+    border-radius: 10px; 
+    overflow: hidden; 
+    box-shadow: -1px 1px 4px 2px rgba(0, 0, 0, 0.25);
+    background-color: white;
+    color:rgba(36, 51, 223, 0.76);
+}
+table, th, td {
+    border: none;
+}
+th, td {
+    transition: 1.2s ease;
+    padding: 5px;
+    border-radius: 10px;
+}
+th:hover{
+    transform: translate(-5%,-5%);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+td {
+    cursor: pointer;
+}
+.tem-descricao {
+    transition: 1.2s ease;
+    background-color: #783CC3;
+    color: white;
+}
+.tem-descricao:hover{
+    transform: translate(-5%,-5%);
+    border-radius: 10px;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
 .login{
     color: #FFF;
     text-align: center;
@@ -75,7 +108,7 @@ h2{
     place-items: center;
 }
 .formulario{
-    margin-top: 110px;
+    margin-top: 225px;
     width: 503px;
     height: 524px;
     border-radius: 47px;
@@ -301,6 +334,9 @@ h2{
 }
 .botao-acesso{
     border-radius: 18px;
+    color: white;
+    font-family: 'Roboto Slab';
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.37);
     border: 0;
     background: #783CC3;
     box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -322,4 +358,150 @@ h2{
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+}
+
+.calendario-estilo{
+    margin-top: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 650px;
+    width: 650px;
+    font-family: 'Roboto Slab';
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(155deg, rgba(255, 0, 0, 0.32) 1.41%, rgba(128, 0, 255, 0.32) 98.76%);
+}
+
+@media screen and (max-width: 553px) {
+    .calendario-estilo {
+        width: 453px;
+        max-width: none;
+
+    }
+}
+
+#descricao{
+    margin-right: 20px;
+    border: none;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.13);
+}
+#adicionar{
+    border-radius: 18px;
+    color: white;
+    font-family: 'Roboto Slab';
+    border: 0;
+    background: #f39200;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
+    width: 150px;
+    height: 43px;
+    transition: 1s ease;
+}
+#adicionar:hover{
+    transform: translate(-5%,-5%);
+    background-color: #c97e0c;
+}
+.menu-lateral {
+    width: 0;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    transition: width 0.3s;
+    overflow-x: hidden;
+    z-index: 2; /* Defina um z-index maior para o menu lateral */
+}
+/* Estilo para o botão de acionamento */
+#menu-toggle {
+    cursor: pointer;
+    z-index: 1; /* Defina um z-index menor para o botão de acionamento */
+    transition: 1s ease;
+}
+#menu-toggle:hover{
+    transform: translate(-5%,-5%);
+}
+.estilo-exercicios{
+    margin-top: 180px;
+    width: 600px;
+    height: 600px;
+    background-color: white;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.13);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+#simButton{
+    border-radius: 18px;
+    color: white;
+    font-family: 'Roboto Slab';
+    border: 0;
+    background: #65bd02;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
+    width: 150px;
+    height: 43px;
+    margin: 15px;
+    font-size: 18px;
+    transition: 1s ease;
+    cursor: pointer;
+}
+
+#naoButton{
+    border-radius: 18px;
+    color: white;
+    font-family: 'Roboto Slab';
+    border: 0;
+    background: #bd4002;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
+    width: 150px;
+    height: 43px;
+    margin: 15px;
+    font-size: 18px;
+    transition: 1s ease;
+    cursor: pointer;
+}
+
+#simButton:hover{
+    transform: translate(-5%,-5%);
+}
+
+#naoButton:hover{
+    transform: translate(-5%,-5%);
+}
+
+#postarButton{
+    border-radius: 18px;
+    color: white;
+    font-family: 'Roboto Slab';
+    border: 0;
+    background: #783CC3;
+    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.283);
+    width: 150px;
+    height: 35px;
+    margin: 15px;
+    font-size: 14px;
+    transition: 1s ease;
+    cursor: pointer;
+}
+
+#postarButton:hover{
+    transform: translate(-5%,-5%);
+}
+
+@media screen and (max-width: 553px) {
+    .estilo-exercicios {
+        width: 453px;
+        max-width: none;
+
+    }
 }
