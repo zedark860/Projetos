@@ -15,8 +15,10 @@ url_site = 'https://assinarweb.com.br/arweb/login'
 
 login = ''
 senha = ''
-usuario_nome = ''
-diretorio_pdf = r'C:\Users\{usuario_nome}\Desktop\ContraCheque\PDF'
+# Obtém o diretório do usuário da máquina atual
+user_directory = os.path.expanduser("~")
+# Cria o caminho completo para o diretório de PDFs
+diretorio_pdf = os.path.join(user_directory, 'Desktop', 'ContraCheque', 'PDF')
 arquivos_pdf = glob.glob(os.path.join(diretorio_pdf, '*.pdf'))
 arquivos = os.listdir(diretorio_pdf)
 
@@ -41,8 +43,11 @@ def ler_planilha(planilha_path, coluna_nome):
 
 
 def encontrar_pdf(nome):
+    # Obtém o diretório do usuário da máquina atual
+    user_directory = os.path.expanduser("~")
 
-    diretorio_pdfs = r'C:\Users\{usuario_nome}\Desktop\ContraCheque\PDF'
+    diretorio_pdfs = os.path.join(
+        user_directory, 'Desktop', 'ContraCheque', 'PDF')
     nome = f"{nome}"
     extensao = '.pdf'
 
@@ -58,7 +63,12 @@ def encontrar_pdf(nome):
 
 # Exemplo de uso
 try:
-    planilha_path = 'Gestão de Funcionários 2023.xlsx'
+    # Obtém o diretório do usuário da máquina atual
+    user_directory = os.path.expanduser("~")
+
+    # Cria o caminho completo para a planilha
+    planilha_path = os.path.join(
+        user_directory, 'Desktop', 'ContraCheque', 'Funcionários2024.xlsx')
     coluna_nome = 'NOME'
 
     if not os.path.exists(planilha_path):
@@ -91,7 +101,9 @@ def enviar_contracheques(login, senha, contatos):
     chrome_options.add_argument('--start-maximized')
 
     # Configuração do caminho do driver do Chrome
-    webdriver_path = './chrome/chromedriver.exe'
+    user_dir = os.path.expanduser("~")
+    webdriver_path = os.path.join(
+        user_dir, 'Desktop', 'ContraCheque', 'chrome', 'chromedriver.exe')
 
     # Adicione o caminho do driver ao PATH
     os.environ['PATH'] = f'{os.environ["PATH"]};{os.path.abspath(webdriver_path)}'
@@ -111,23 +123,25 @@ def enviar_contracheques(login, senha, contatos):
             (By.NAME, 'nome'))).send_keys(Keys.RETURN)
 
         # Itera sobre os colaboradores ativos e realiza a automação no site
-        for index, row in contatos.iterrows():
+        for _, row in contatos.iterrows():
             nome_colaborador = row["NOME"]
             print(f"Processando: {nome_colaborador}")
 
             # Clique no primeiro botão
             element = WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-                (By.XPATH, '/html/body/div[2]/div/div[1]/div[2]/div[1]/div[1]/a/div')))
+                (By.CLASS_NAME, 'm-widget4__ext')))
             element.click()
 
             # Clique no segundo botão
             element = WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-                (By.XPATH, '//*[@id="m_wizard_form_step_1"]/div/div[2]/div[2]/label')))
+                (By.XPATH, '//*[@id="m_wizard_form_step_1"]/div/div[2]/div[2]/label/span[1]/span/span')))
             element.click()
+
+            time.sleep(5)
 
             # Abre a tela de seleção de arquivo no navegador
             element = WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="mDropzoneEnvelope"]')))
+                EC.presence_of_element_located((By.ID, 'mDropzoneEnvelope')))
             element.click()
 
             # Encontra o caminho do arquivo PDF usando a função encontrar_pdf
@@ -135,13 +149,12 @@ def enviar_contracheques(login, senha, contatos):
 
             print(f"Caminho do PDF para {nome_colaborador}: {caminho_pdf}")
 
+            time.sleep(5)
+
             if caminho_pdf:
                 try:
                     # Clique na caixa de diálogo para torná-la ativa
                     pyautogui.FAILSAFE = False
-
-                    # Adicione um atraso de 2 segundos antes de escrever
-                    time.sleep(3)
 
                     # Digite o caminho completo do arquivo usando pyautogui
                     pyautogui.write(caminho_pdf)
@@ -149,15 +162,23 @@ def enviar_contracheques(login, senha, contatos):
                     # Pressione Enter para confirmar a seleção
                     pyautogui.press('enter')
 
-                    # Aguarde alguns segundos para o processo de seleção ser concluído
-                    time.sleep(3)
+                    time.sleep(5)
 
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-                        (By.XPATH, '//*[@id="m_form"]/div[2]/div/div/div[2]/a[2]'))).click()
+                        (By.XPATH, '//*[@id="m_form"]/div[2]/div/div/div[2]/a[2]/span'))).click()
+
+                    time.sleep(5)
+
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                         (By.XPATH, '//*[@id="m_wizard_form_step_2"]/div/button[2]'))).click()
+
+                    time.sleep(5)
+
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                         (By.XPATH, '//*[@id="tblBuscarParticipantes_filter"]/label/input'))).click()
+
+                    time.sleep(5)
+
                     # Clique no campo de filtro
                     search_input = driver.find_element(
                         By.XPATH, '//*[@id="tblBuscarParticipantes_filter"]/label/input')
@@ -170,38 +191,38 @@ def enviar_contracheques(login, senha, contatos):
                     search_input.send_keys(Keys.RETURN)
 
                     # Aguarde a página carregar (ajuste conforme necessário)
-                    time.sleep(3)
+                    time.sleep(5)
 
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                         (By.XPATH, '//*[@id="tblBuscarParticipantes"]/tbody/tr/td[5]/a'))).click()
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-                        (By.XPATH, '//*[@id="adicionarNovo"]/div[1]/div[12]/button'))).click()
+                        (By.XPATH, '//*[@id="adicionarNovo"]/div[1]/div[13]/button'))).click()
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                         (By.XPATH, '//*[@id="m_form"]/div[2]/div/div/div[2]/a[2]'))).click()
 
                     time.sleep(5)
 
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-                        (By.XPATH, '//*[@id="participant_list"]/div/div/div/div[3]/label[1]/span'))).click()
+                        (By.XPATH, '//*[@id="participant_list"]/div/div/div/div[3]/label[1]'))).click()
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                         (By.XPATH, '//*[@id="salvar"]'))).click()
-
-                    time.sleep(5)
-
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                         (By.XPATH, '/html/body/div[5]/div/div[3]/button[1]'))).click()
-
-                    time.sleep(5)
 
                     quantidade += 1
 
                     WebDriverWait(driver, 15).until(EC.presence_of_element_located(
-                        (By.XPATH, '//*[@id="m_header"]/div[1]/div/div/div[1]/div/div[1]/a/img'))).click()
+                        (By.XPATH, '/html/body/div[8]/div/div[3]/button[1]'))).click()
+
+                    time.sleep(5)
 
                     data = datetime.datetime.now()
                     data_formatada = data.strftime('%H:%M:%S %d/%m/%y')
 
                     escrever_log(
+                        f"Mensagem Contra Cheque enviado para {nome_colaborador} às {data_formatada}")
+
+                    print(
                         f"Mensagem Contra Cheque enviado para {nome_colaborador} às {data_formatada}")
 
                 except Exception as ex:
@@ -212,6 +233,11 @@ def enviar_contracheques(login, senha, contatos):
                     escrever_erro(
                         f"ERRO: {str(ex)} durante o processamento do arquivo {nome_colaborador} às {dataError_formatada}")
 
+                    print(
+                        f"ERRO: {str(ex)} durante o processamento do arquivo {nome_colaborador} às {dataError_formatada}")
+                    
+                    continue
+    driver.quit()        
 
 # Chamada da função com os novos valores de login e senha
 enviar_contracheques(login, senha, df_contatos)
