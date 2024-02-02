@@ -56,7 +56,7 @@ class EmailSenderThread(QThread):
 
 
     def __init__(self, remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html):
-        super()._init_()
+        super().__init__()
         # Parâmetros para o envio de e-mails
         self.remetente = remetente
         self.senha = senha
@@ -377,7 +377,9 @@ class EmailSenderApp(QWidget):
         # Configura um temporizador para iniciar o envio após 20 segundos
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.email_sender_thread.start)
-        self.timer.start(30000)  # 30 segundos em milissegundos
+        
+        # Inicia o envio imediatamente
+        self.email_sender_thread.start()
 
     
     def closeEvent(self, event):
