@@ -4,6 +4,10 @@ import smtplib
 import webbrowser
 import json
 import atexit
+import os
+from styles import *
+from pathlib import Path
+from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from PyQt5.QtWidgets import (
@@ -21,20 +25,38 @@ from PyQt5.QtWidgets import (
     )
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
 from PyQt5.QtGui import QIcon, QIntValidator
-from pathlib import Path
 
-# Cores do CSS
-cor_preta = "#000000"
-cor_azul_escuro = "#1693A5"
-cor_cinza_esverdeado = "#D8D8C0"
-cor_bege_claro = "#F0F0D8"
-cor_branco = "#FFFFFF"
-cor_cinza_claro = "#F5F5F5"
-cor_cinza_escuro = "#333333"
-cor_cinza = "#D1D1D1"
-cor_azul_claro = "#8ECDDD"
-cor_cinza_medio = "#D6D6D6"
-cor_vermelho_escuro = "#BD2626"
+
+# Definindo variável de hora atual
+hora_atual = None
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(
+        os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+# Define a função para escrever no log de enviados
+def escrever_envio(mensagem):
+    arquivo_enviados = Path('enviados.txt')
+    # Cria o arquivo se ele não existir
+    if not arquivo_enviados.exists():
+        arquivo_enviados.touch()
+        
+    # Escreve os logs no arquivo
+    with open("enviados.txt", "a") as log_file:
+        log_file.write(f"{mensagem}\n")
+            
+# Define a função para escrever no log de erros
+def escrever_erro(mensagem):
+    # Cria o arquivo se ele não existir
+    arquivo_erros = Path('erros.txt')
+    if not arquivo_erros.exists():
+        arquivo_erros.touch()
+            
+    # Escreve os logs no arquivo
+    with open("erros.txt", "a") as log_file:
+        log_file.write(f"{mensagem}\n")
 
 class EmailSenderThread(QThread):
     
@@ -68,6 +90,9 @@ class EmailSenderThread(QThread):
 
 
     def run(self):
+        # Utilizando a variável global hora_atual
+        global hora_atual 
+        
         # Configurações do servidor SMTP
         servidor_smtp = 'smtp.gmail.com'
         porta_smtp = 587
@@ -113,22 +138,29 @@ class EmailSenderThread(QThread):
             msg['From'] = self.remetente
             password = self.senha
 
+            hora_atual = datetime.now()
+
             try:
                 # Tenta enviar o e-mail
                 with smtplib.SMTP(servidor_smtp, porta_smtp) as s:
                     s.starttls()
                     s.login(msg['From'], password)
                     s.sendmail(msg['From'], [msg['To']], msg.as_string().encode('utf-8'))
+                
 
                 # Atualiza a planilha e emite sinal de sucesso
                 self.df_emails.loc[self.df_emails['E-mail'] == email_destino, status_coluna] = 'SUCESSO'
                 self.df_emails.to_excel('Enviar E-mails.xlsx', index=False)
-                self.update_status_signal.emit(f'E-mail enviado para {email_destino}')
+                mensagem_de_envio = f'\nE-mail enviado para {email_destino} às {hora_atual.strftime("%H:%M:%S")}\n'
+                escrever_envio(mensagem_de_envio)
+                self.update_status_signal.emit(mensagem_de_envio)
 
             except Exception as e:
                 # Em caso de erro, atualiza a planilha e emite sinal de erro
                 self.df_emails.loc[self.df_emails['E-mail'] == email_destino, status_coluna] = 'ERRO'
-                print(f"Erro ao enviar e-mail para {email_destino}: {e}")
+                mensagem_de_erro = f'\nErro ao enviar e-mail para {email_destino} ás {hora_atual.strftime("%H:%M:%S")}: {e}\n'
+                escrever_erro(mensagem_de_erro)
+                print(mensagem_de_erro)
                 self.df_emails.to_excel('Enviar E-mails.xlsx', index=False)
 
             # Pausa por 30 segundos antes de enviar o próximo e-mail
@@ -154,71 +186,6 @@ class EmailSenderApp(QWidget):
         """
         
         super().__init__()
-        
-        """
-        -Paleta de cores utilizada-
-
-        #000000 - Preto
-        #1693A5 - Azul Escuro
-        #D8D8C0 - Cinza Esverdeado
-        #F0F0D8 - Bege Claro
-        #FFFFFF - Branco
-        #F5F5F5 - Cinza Claro
-        #333333 - Cinza Escuro
-        #D1D1D1 - Cinza
-        #8ECDDD - Azul Claro
-        #B3B3B3 - Cinza Médio
-        #000 - Preto (abreviação padrão)
-
-        -- Caso for adicionar ou tirar alguma lembre-se de mexer aqui
-
-        """
-
-        # Estilo da página principal
-        styleMain = f"""
-        QWidget {{
-            color: {cor_preta};
-            background-color: {cor_bege_claro};
-        }}
-
-        QLabel {{
-            background: transparent;
-            font-weight: 400;
-            font-size: 12px;
-        }}
-
-        QLineEdit {{
-            color: {cor_preta};
-            border-radius: 8px;
-            border: 2px outset {cor_cinza_esverdeado};
-            padding: 5px;
-            background: {cor_branco};
-        }}
-
-        QPushButton {{
-            background-color: {cor_cinza_escuro};
-            color: #fff;
-            font-weight: 500;
-            border-radius: 8px;
-            padding: 10px 20px;
-            margin-top: 10px;
-            outline: 0px;
-            font-size: 11px;
-        }}
-
-        QPushButton:hover {{
-            border: 1px inset {cor_cinza_esverdeado};
-        }}
-
-        QTextEdit {{
-            border: 2px outset {cor_cinza_esverdeado};
-            color: {cor_preta};
-            background-color: {cor_branco};
-            border-radius: 8px;
-        }}
-
-        """
-        ##########################
 
         self.init_ui(styleMain)
         
@@ -338,7 +305,6 @@ class EmailSenderApp(QWidget):
         # Define a posição da janela para centralizá-la
         self.move(x, y)
     
-    
     def toggle_echo_mode(self, state):
         # Alterna entre mostrar ou ocultar caracteres na entrada de senha com base no estado da caixa de seleção
         if state == Qt.Checked:
@@ -354,7 +320,12 @@ class EmailSenderApp(QWidget):
         if not self.campos_preenchidos():
             return
         
-        print('Iniciando envio de e-mails!')
+        # Utilizando a variável global hora_atual
+        global hora_atual 
+        
+        hora_atual = datetime.now()
+        
+        print(f'Iniciando envio de e-mails às {hora_atual.strftime("%H:%M:%S")}')
             
         QMessageBox.information(self, 'Envio Iniciado', 'Começando envio de e-mails')
 
@@ -429,13 +400,18 @@ class EmailSenderApp(QWidget):
 
 
     def atualizar_progresso(self, progresso):
+        # Utilizando a variável global hora_atual
+        global hora_atual 
+        
         # Atualiza e imprime o progresso atual
         print(f'Progresso: {progresso}%')
         
+        hora_atual = datetime.now()
+
         # Se o progresso for 100%, imprime uma mensagem de conclusão
         if progresso == 100:
             # Exibe uma mensagem de informação indicando que todos os e-mails foram enviados
-            print('Envio de e-mails concluído!')
+            print(f'\nEnvio de e-mails concluído às {hora_atual.strftime("%H:%M:%S")}!\n')
 
             QMessageBox.information(self, 'Envio Concluído', 'Todos os e-mails foram enviados com sucesso!')
 
@@ -489,7 +465,7 @@ class EmailSenderApp(QWidget):
                 print(f"\nE-mails duplicados foram removidos! Agora são: {tamanho_depois}\n")
             else:
                 emails = df_emails['E-mail'].tolist()
-                print('Não há E-mails duplicados na planilha!')
+                print('\nNão há E-mails duplicados na planilha!\n')
                 return emails, df_emails
 
             # Salva a planilha sem duplicatas
@@ -499,7 +475,7 @@ class EmailSenderApp(QWidget):
             return df_sem_duplicatas['E-mail'].tolist(), df_sem_duplicatas
         else:
             emails = df_emails['E-mail'].tolist()
-            print('Não há E-mails duplicados na planilha!')
+            print('\nNão há E-mails duplicados na planilha!\n')
             # Retorna a lista de e-mails e o dataframe
             return emails, df_emails
        
@@ -513,7 +489,7 @@ class EmailSenderApp(QWidget):
         
     def verificar_arquivo_credenciais(self):
         # Verifica se o arquivo de credenciais existe, senão, cria um novo
-        path_credenciais = Path('credenciais.json')
+        path_credenciais = Path(resource_path('credenciais.json'))
         if not path_credenciais.exists():
             path_credenciais.touch()    
         
@@ -521,7 +497,7 @@ class EmailSenderApp(QWidget):
     def salvar_credenciais(self, email, senha):
         # Salva as credenciais fornecidas em um arquivo json
         credenciais = {'email': email, 'senha': senha}
-        with open('credenciais.json', 'w') as arquivo:
+        with open(resource_path('credenciais.json'), 'w') as arquivo:
             json.dump(credenciais, arquivo)
         
             
@@ -533,23 +509,29 @@ class EmailSenderApp(QWidget):
     def carregar_credenciais(self):
         try:
             # Tenta abrir o arquivo 'credenciais.json' no modo de leitura
-            with open('credenciais.json', 'r') as arquivo:
+            with open(resource_path('credenciais.json'), 'r') as arquivo:
                 # Carrega as credenciais do arquivo json
                 credenciais = json.load(arquivo)
                 # Retorna o e-mail e a senha armazenados nas credenciais
                 return credenciais.get('email', ''), credenciais.get('senha', '')
             
         # Se o arquivo não for encontrado ou se houver um erro ao decodificar o json
-        except (FileNotFoundError, json.JSONDecodeError):
-            # retorna uma string vazia para o e-mail e a senha
-            return '', ''
+        except FileNotFoundError:
+            print("Arquivo 'credenciais.json' não encontrado.")
+        except json.JSONDecodeError:
+            print("Erro ao decodificar o arquivo JSON 'credenciais.json'. Verifique se o formato do arquivo está correto.")
+        except Exception as e:
+            print(f"Erro ao carregar as credenciais: {e}")
+            
+        # retorna uma string vazia para o e-mail e a senha
+        return '', ''
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     
     # Crie um ícone usando o caminho para o seu arquivo de ícone
-    app_icon = QIcon(str(Path("icon.ico")))
+    app_icon = QIcon(str(resource_path("icon.ico")))
     
     # Defina o ícone da aplicação
     app.setWindowIcon(app_icon)
