@@ -5,6 +5,7 @@ import webbrowser
 import json
 import atexit
 import os
+import time
 from styles import *
 from pathlib import Path
 from datetime import datetime
@@ -58,6 +59,12 @@ def escrever_erro(mensagem):
     with open("erros.txt", "a") as log_file:
         log_file.write(f"{mensagem}\n")
 
+# Função para limpar a tela do console
+def limpar_tela():
+    # Verifica o sistema operacional para determinar o comando apropriado para limpar a tela, espera 3 segundos antes disso
+    time.sleep(3)
+    os.system('cls' if os.name == "nt" else "clear")
+
 class EmailSenderThread(QThread):
     
     """Classe responsável pelo envio dos e-mails.
@@ -77,7 +84,7 @@ class EmailSenderThread(QThread):
     update_progress_signal = pyqtSignal(int)
 
 
-    def __init__(self, remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html):
+    def __init__(self, remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html, intervalo_envio):
         super().__init__()
         # Parâmetros para o envio de e-mails
         self.remetente = remetente
@@ -87,6 +94,7 @@ class EmailSenderThread(QThread):
         self.assunto = assunto
         self.titulo_html = titulo_html
         self.mensagem_html = mensagem_html
+        self.intervalo_envio = intervalo_envio
 
 
     def run(self):
@@ -99,28 +107,55 @@ class EmailSenderThread(QThread):
 
         # Corpo do e-mail em formato HTML
         corpo_email = f"""
-        <html>
         <head>
             <style>
+                * {{
+                    margin: 0;
+                    padding: 0;
+                }}
                 body {{
                     font-family: Arial, sans-serif;
                     background-color: #f4f4f4;
                     margin: 0;
                     padding: 20px;
+                    width: 100%;
                 }}
                 h1 {{
-                    color: #333;
+                    color: #ffffff;
+                    text-align: center;
+                    padding-top: 30px;
+                }}
+                hr {{
+                    margin: 20px;
                 }}
                 p {{
-                    color: #555;
+                    color: #ffffff;
+                    text-align: center;
+                }}
+                .corpo_principal {{
+                    background-color: #333;
+                    max-width: 500px; /* Largura máxima para controle de layout */
+                    width: 90%; /* Definindo a largura em porcentagem para ser responsiva */
+                    margin: 0 auto; /* Centralizar o elemento */
+                    height: 500px; /* Altura fixa ou pode ser ajustada dinamicamente conforme necessário */
+                    display: flex;
+                    flex-direction: column;
+                    padding: 10px;
+                    border-radius: 10px;
+                    justify-content: space-between;
+                    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.651);
                 }}
             </style>
         </head>
-        <body>
-            <h1>{self.titulo_html}</h1>
-            <p>{self.mensagem_html}</p>
-        </body>
-        </html>
+            <div class="corpo_principal">
+                <center>
+                    <div>
+                        <h1>{self.titulo_html}</h1>
+                        <hr/>
+                        <p>{self.mensagem_html}</p>
+                    </div>
+                </center>
+            </div>
         """
 
         # Nome da coluna que armazenará o status do envio na planilha
@@ -146,13 +181,13 @@ class EmailSenderThread(QThread):
                     s.starttls()
                     s.login(msg['From'], password)
                     s.sendmail(msg['From'], [msg['To']], msg.as_string().encode('utf-8'))
-                
 
                 # Atualiza a planilha e emite sinal de sucesso
                 self.df_emails.loc[self.df_emails['E-mail'] == email_destino, status_coluna] = 'SUCESSO'
                 self.df_emails.to_excel('Enviar E-mails.xlsx', index=False)
-                mensagem_de_envio = f'\nE-mail enviado para {email_destino} às {hora_atual.strftime("%H:%M:%S")}\n'
+                mensagem_de_envio = f'\nE-mail enviado para {email_destino} às {hora_atual.strftime("%H:%M:%S")}, com {self.intervalo_envio}s de intervalo\n'
                 escrever_envio(mensagem_de_envio)
+                limpar_tela()
                 self.update_status_signal.emit(mensagem_de_envio)
 
             except Exception as e:
@@ -160,11 +195,12 @@ class EmailSenderThread(QThread):
                 self.df_emails.loc[self.df_emails['E-mail'] == email_destino, status_coluna] = 'ERRO'
                 mensagem_de_erro = f'\nErro ao enviar e-mail para {email_destino} ás {hora_atual.strftime("%H:%M:%S")}: {e}\n'
                 escrever_erro(mensagem_de_erro)
+                limpar_tela()
                 print(mensagem_de_erro)
                 self.df_emails.to_excel('Enviar E-mails.xlsx', index=False)
 
             # Pausa por 30 segundos antes de enviar o próximo e-mail
-            self.msleep(30000)
+            self.msleep(self.intervalo_envio * 1000)
 
             # Atualiza o progresso
             progress = int((i + 1) / len(self.destinatarios) * 100)
@@ -202,6 +238,8 @@ class EmailSenderApp(QWidget):
 
 
     def init_ui(self, styleMain):
+        # Limpa a tela
+        limpar_tela()
         # Define o título da janela
         self.setWindowTitle('Enviar E-mails')
         # Define o estilo CSS da janela
@@ -236,6 +274,11 @@ class EmailSenderApp(QWidget):
         self.numero_envios_edit.setValidator(QIntValidator())  # Define um validador para permitir apenas números inteiros
         self.numero_envios_edit.setPlaceholderText('Nº')  # Define um texto de espaço reservado para o campo de número de envios
 
+        self.intervalo_envio_label = QLabel('Intervalo entre Envios (segundos):')  # Cria um rótulo para o campo de intervalo entre envios
+        self.intervalo_envio_edit = QLineEdit()  # Cria um campo de entrada para o intervalo entre envios
+        self.intervalo_envio_edit.setPlaceholderText('30')  # Define um texto de espaço reservado para o campo de intervalo entre envios
+        self.intervalo_envio_edit.setValidator(QIntValidator(30, 9999))  # Define um validador para permitir apenas números inteiros maiores ou iguais a 30
+
         self.assunto_label = QLabel('Assunto:')  # Cria um rótulo para o campo de assunto
         self.assunto_edit = QLineEdit()  # Cria um campo de entrada para o assunto
         self.assunto_edit.setPlaceholderText('Assunto do E-mail')  # Define um texto de espaço reservado para o campo de assunto
@@ -268,6 +311,10 @@ class EmailSenderApp(QWidget):
 
         layout.addWidget(self.numero_envios_label)  # Adiciona o rótulo de número de envios ao layout
         layout.addWidget(self.numero_envios_edit)  # Adiciona o campo de número de envios ao layout
+
+        # Adiciona widgets relacionados ao intervalo entre envios ao layout
+        layout.addWidget(self.intervalo_envio_label)
+        layout.addWidget(self.intervalo_envio_edit)
 
         layout.addWidget(self.assunto_label)  # Adiciona o rótulo de assunto ao layout
         layout.addWidget(self.assunto_edit)  # Adiciona o campo de assunto ao layout
@@ -333,19 +380,30 @@ class EmailSenderApp(QWidget):
 
         planilha_path = Path(self.planilha_path_edit.text())
         numero_envios = int(self.numero_envios_edit.text())
+        # Obtenha o intervalo entre envios do campo de entrada e defina 30 como padrão
+        intervalo_envio = int(self.intervalo_envio_edit.text() or '30')
         assunto = self.assunto_edit.text()
         titulo_html = self.titulo_html_edit.text()
         mensagem_html = self.mensagem_html_edit.toPlainText()
         remetente = self.email_remetente_edit.text()
         senha = self.senha_edit.text()
 
+        # Verifica se o intervalo de envio é menor que 30 segundos
+        if intervalo_envio < 30:
+            QMessageBox.warning(self, 'Valor Inválido', 'O intervalo entre envios deve ser no mínimo 30 segundos.')
+            self.set_widgets_enabled(True)
+            return
+
+        # Substitui quebras de linha por <br> no HTML da mensagem
+        mensagem_html = mensagem_html.replace('\n', '<br>')
+
         destinatarios, df_emails = self.ler_emails(planilha_path)
 
-        self.email_sender_thread = EmailSenderThread(remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html)
+        self.email_sender_thread = EmailSenderThread(remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html, intervalo_envio)
         self.email_sender_thread.update_status_signal.connect(self.atualizar_status)
         self.email_sender_thread.update_progress_signal.connect(self.atualizar_progresso)
         
-        # Configura um temporizador para iniciar o envio após 20 segundos
+        # Configura um temporizador para iniciar o envio após o intervalo definido
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.email_sender_thread.start)
         
@@ -410,6 +468,7 @@ class EmailSenderApp(QWidget):
 
         # Se o progresso for 100%, imprime uma mensagem de conclusão
         if progresso == 100:
+            limpar_tela()
             # Exibe uma mensagem de informação indicando que todos os e-mails foram enviados
             print(f'\nEnvio de e-mails concluído às {hora_atual.strftime("%H:%M:%S")}!\n')
 
@@ -436,6 +495,7 @@ class EmailSenderApp(QWidget):
         self.titulo_html_edit,
         self.iniciar_button,
         self.mensagem_html_edit,
+        self.intervalo_envio_edit,
         ]
         
         for index, item in enumerate(lista_desabilitar_ou_habilitar):
@@ -540,6 +600,7 @@ if __name__ == '__main__':
     main_window = EmailSenderApp()
     # Define o ícone da janela como o ícone da aplicação
     main_window.setWindowIcon(app_icon)
+    
     # Exibe a janela de login
     main_window.show()
     
