@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import (
     QTextEdit, 
     QDesktopWidget, 
     QCheckBox,
+    QHBoxLayout,
     )
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
 from PyQt5.QtGui import QIcon, QIntValidator
@@ -61,8 +62,8 @@ def escrever_erro(mensagem):
 
 # Função para limpar a tela do console
 def limpar_tela():
-    # Verifica o sistema operacional para determinar o comando apropriado para limpar a tela, espera 2 segundos antes disso
-    time.sleep(2)
+    # Verifica o sistema operacional para determinar o comando apropriado para limpar a tela, espera 3 segundos antes disso
+    time.sleep(3)
     os.system('cls' if os.name == "nt" else "clear")
 
 class EmailSenderThread(QThread):
@@ -107,9 +108,7 @@ class EmailSenderThread(QThread):
 
         # Corpo do e-mail em formato HTML
         corpo_email = f"""
-        <html>
         <head>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
             <style>
                 * {{
                     margin: 0;
@@ -123,7 +122,7 @@ class EmailSenderThread(QThread):
                     width: 100%;
                 }}
                 h1 {{
-                    color: #ffffff;
+                    color: #131A1D;
                     text-align: center;
                     padding-top: 30px;
                 }}
@@ -131,11 +130,27 @@ class EmailSenderThread(QThread):
                     margin: 20px;
                 }}
                 p {{
-                    color: #ffffff;
+                    color: #131A1D;
+                    text-align: justify;
+                    font-size: 16px;
+                }}
+                button {{
+                    all: unset;
+                    width: 120px;
+                    height: 50px;
+                    background-color: #03738C;
+                    border-radius: 10px;
                     text-align: center;
+                    margin: auto;
+                }}
+                a {{
+                    color: white;
+                    text-decoration: none;
+                    font-weight: bold;
+                    font-size: 18px;
                 }}
                 .corpo_principal {{
-                    background-color: #333;
+                    background-color: #DFEDF2;
                     max-width: 500px; /* Largura máxima para controle de layout */
                     width: 90%; /* Definindo a largura em porcentagem para ser responsiva */
                     margin: 0 auto; /* Centralizar o elemento */
@@ -149,16 +164,15 @@ class EmailSenderThread(QThread):
                 }}
             </style>
         </head>
-        <body>
             <div class="corpo_principal">
-            <div>
-                <h1>{self.titulo_html}</h1>
-                <hr/>
-                <p>{self.mensagem_html}</p>
+                <center>
+                    <div>
+                        <h1>{self.titulo_html}</h1>
+                        <hr/>
+                        <p>{self.mensagem_html}</p>
+                    </div>
+                </center>
             </div>
-            </div>
-        </body>
-        </html>
         """
 
         # Nome da coluna que armazenará o status do envio na planilha
@@ -190,17 +204,17 @@ class EmailSenderThread(QThread):
                 self.df_emails.to_excel('Enviar E-mails.xlsx', index=False)
                 mensagem_de_envio = f'\nE-mail enviado para {email_destino} às {hora_atual.strftime("%H:%M:%S")}, com {self.intervalo_envio}s de intervalo\n'
                 escrever_envio(mensagem_de_envio)
-                self.update_status_signal.emit(mensagem_de_envio)
                 limpar_tela()
+                self.update_status_signal.emit(mensagem_de_envio)
 
             except Exception as e:
                 # Em caso de erro, atualiza a planilha e emite sinal de erro
                 self.df_emails.loc[self.df_emails['E-mail'] == email_destino, status_coluna] = 'ERRO'
                 mensagem_de_erro = f'\nErro ao enviar e-mail para {email_destino} ás {hora_atual.strftime("%H:%M:%S")}: {e}\n'
                 escrever_erro(mensagem_de_erro)
+                limpar_tela()
                 print(mensagem_de_erro)
                 self.df_emails.to_excel('Enviar E-mails.xlsx', index=False)
-                limpar_tela()
 
             # Pausa por 30 segundos antes de enviar o próximo e-mail
             self.msleep(self.intervalo_envio * 1000)
@@ -241,6 +255,8 @@ class EmailSenderApp(QWidget):
 
 
     def init_ui(self, styleMain):
+        # Limpa a tela
+        limpar_tela()
         # Define o título da janela
         self.setWindowTitle('Enviar E-mails')
         # Define o estilo CSS da janela
@@ -248,7 +264,7 @@ class EmailSenderApp(QWidget):
         # Desabilita o o botão de maximizar a tela
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
         # Define o tamanho da janela
-        self.setGeometry(100, 100, 400, 300)
+        self.setGeometry(100, 100, 500, 500)
 
         self.email_remetente_label = QLabel('E-mail Remetente: (Utilize um email do Google)')  # Cria um rótulo para o campo de e-mail
         self.email_remetente_edit = QLineEdit()  # Cria um campo de entrada para o e-mail
@@ -262,7 +278,7 @@ class EmailSenderApp(QWidget):
 
         self.planilha_path_label = QLabel('Escolha a Planilha:')  # Cria um rótulo para o campo de caminho da planilha
         self.planilha_path_edit = QLineEdit()  # Cria um campo de entrada para o caminho da planilha
-        self.planilha_path_edit.setReadOnly(True)  # Configura o campo de caminho da planilha para ser somente leitura
+        self.planilha_path_edit.setReadOnly(False)  # Configura o campo de caminho da planilha para ser somente leitura
         self.planilha_path_edit.setPlaceholderText('.xlsx')  # Define um texto de espaço reservado para o campo de caminho da planilha
 
         self.choose_planilha_button = QPushButton('Escolher')  # Cria um botão para escolher a planilha
@@ -291,6 +307,23 @@ class EmailSenderApp(QWidget):
         self.mensagem_html_label = QLabel('Mensagem:')  # Cria um rótulo para o campo de mensagem
         self.mensagem_html_edit = QTextEdit()  # Cria um campo de entrada para a mensagem
         self.mensagem_html_edit.setPlaceholderText('Mensagem principal do E-mail')  # Define um texto de espaço reservado para o campo de mensagem
+        
+        # Seção para adicionar os três campos de entrada para largura, altura e URL da imagem
+        self.largura_label = QLabel('Largura:')  
+        self.largura_edit = QLineEdit()
+        self.largura_edit.setPlaceholderText('Largura')
+
+        self.altura_label = QLabel('Altura:')  
+        self.altura_edit = QLineEdit()
+        self.altura_edit.setPlaceholderText('Altura')
+
+        self.src_label = QLabel('URL da Imagem:')  
+        self.src_edit = QLineEdit()
+        self.src_edit.setPlaceholderText('URL da Imagem')
+
+        # Botão para inserir a tag <img> com os valores dos campos
+        self.inserir_imagem_button = QPushButton('Inserir Imagem')
+        self.inserir_imagem_button.clicked.connect(self.inserir_imagem)
 
         self.iniciar_button = QPushButton('Iniciar Envio')  # Cria um botão para iniciar o envio
         self.iniciar_button.setStyleSheet(f'background-color: {cor_azul_escuro}')  # Define o estilo do botão de início
@@ -304,30 +337,52 @@ class EmailSenderApp(QWidget):
         layout.addWidget(self.senha_edit)  # Adiciona o campo de senha ao layout
 
         layout.addWidget(self.show_password_button)  # Adiciona o botão de seleção de mostrar senha ao layout
-
-        layout.addWidget(self.planilha_path_label)  # Adiciona o rótulo de caminho da planilha ao layout
+        
+        layout.addWidget(self.planilha_path_label) # Adiciona o rótulo de caminho da planilha ao layout
         layout.addWidget(self.planilha_path_edit)  # Adiciona o campo de caminho da planilha ao layout
-        layout.addWidget(self.choose_planilha_button)  # Adiciona o botão de escolha da planilha ao layout
-        layout.addWidget(self.baixar_planilha)  # Adiciona o botão de download da planilha ao layout
 
-        layout.addWidget(self.numero_envios_label)  # Adiciona o rótulo de número de envios ao layout
-        layout.addWidget(self.numero_envios_edit)  # Adiciona o campo de número de envios ao layout
+        layout_botoes_planilha = QHBoxLayout()
+        layout_botoes_planilha.addWidget(self.choose_planilha_button)  # Adiciona o botão de escolha da planilha ao layout
+        layout_botoes_planilha.addWidget(self.baixar_planilha)  # Adiciona o botão de download da planilha ao layout
+        
+        # Adicione os botões de escolher a planilha e baixá-la
+        layout.addLayout(layout_botoes_planilha)
 
+        layout_inter_env = QHBoxLayout()
+        layout_inter_env.addWidget(self.numero_envios_label)  # Adiciona o rótulo de número de envios ao layout
+        layout_inter_env.addWidget(self.numero_envios_edit)  # Adiciona o campo de número de envios ao layout
         # Adiciona widgets relacionados ao intervalo entre envios ao layout
-        layout.addWidget(self.intervalo_envio_label)
-        layout.addWidget(self.intervalo_envio_edit)
+        layout_inter_env.addWidget(self.intervalo_envio_label)
+        layout_inter_env.addWidget(self.intervalo_envio_edit)
+        
+        # Adicione os campos de número de envios e tempo de envios  
+        layout.addLayout(layout_inter_env)
 
         layout.addWidget(self.assunto_label)  # Adiciona o rótulo de assunto ao layout
         layout.addWidget(self.assunto_edit)  # Adiciona o campo de assunto ao layout
 
         layout.addWidget(self.titulo_html_label)  # Adiciona o rótulo de título ao layout
         layout.addWidget(self.titulo_html_edit)  # Adiciona o campo de título ao layout
+        
+        # Layout para os campos de entrada e o botão
+        layout_imagem = QHBoxLayout()
+        layout_imagem.addWidget(self.largura_label)
+        layout_imagem.addWidget(self.largura_edit)
+        layout_imagem.addWidget(self.altura_label)
+        layout_imagem.addWidget(self.altura_edit)
+        layout_imagem.addWidget(self.src_label)
+        layout_imagem.addWidget(self.src_edit)
+        layout_imagem.addWidget(self.inserir_imagem_button)
+        
+        # Adicione os campos de largura, altura e URL da imagem ao layout principal
+        layout.addLayout(layout_imagem)
 
         layout.addWidget(self.mensagem_html_label)  # Adiciona o rótulo de mensagem ao layout
         layout.addWidget(self.mensagem_html_edit)  # Adiciona o campo de mensagem ao layout
-
+        
         layout.addWidget(self.iniciar_button)  # Adiciona o botão de início ao layout
 
+        # Adicione o layout principal à janela
         self.setLayout(layout)
 
         # Conectar sinais a slots
@@ -547,6 +602,26 @@ class EmailSenderApp(QWidget):
             "https://www.dropbox.com/scl/fi/86uil93uepe3sssd7yxm8/Enviar-E-mails.xlsx?rlkey=inogq1zqcm3xjame930yksm75&dl=1"
         )
        
+       
+    def inserir_imagem(self):
+        # Verifica se todos os campos estão preenchidos
+        if not self.largura_edit.text() or not self.altura_edit.text() or not self.src_edit.text():
+            QMessageBox.warning(self, 'Campos Vazios', 'Por favor, preencha todos os campos para inserir a imagem.')
+            return
+
+        # Obtém os valores dos campos
+        largura = self.largura_edit.text()
+        altura = self.altura_edit.text()
+        src = self.src_edit.text()
+
+        # Cria a tag <img> com os valores dos campos
+        tag_img = f'<img width="{largura}" height="{altura}" src="{src}" style="border-radius: 10px;">'
+
+        # Insere a tag <img> no campo de mensagem HTML
+        mensagem_atual = self.mensagem_html_edit.toPlainText()
+        nova_mensagem = mensagem_atual + tag_img
+        self.mensagem_html_edit.setPlainText(nova_mensagem) 
+       
         
     def verificar_arquivo_credenciais(self):
         # Verifica se o arquivo de credenciais existe, senão, cria um novo
@@ -601,6 +676,7 @@ if __name__ == '__main__':
     main_window = EmailSenderApp()
     # Define o ícone da janela como o ícone da aplicação
     main_window.setWindowIcon(app_icon)
+    
     # Exibe a janela de login
     main_window.show()
     

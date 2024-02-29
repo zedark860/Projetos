@@ -1,33 +1,13 @@
 import tkinter as tk
 import customtkinter as ctk
-import pyautogui
-import time
 import subprocess
 
-def procedimento_entrar_servidor(nome_aplicativo, senha, mensagem):
-    # Procedimento para abrir o servidor
-    pyautogui.press('win')
-    pyautogui.write(nome_aplicativo)
-    time.sleep(2)
-    pyautogui.press('enter')
-    time.sleep(2)
-    pyautogui.press('enter')
-    time.sleep(10)
-    pyautogui.write(senha)
-    time.sleep(2)
-    pyautogui.press('enter')
-    time.sleep(15)
-
-    # Aqui você pode adicionar a lógica para enviar a mensagem
-    enviar_mensagem_servidor(mensagem)
-
-
 def enviar_mensagem_servidor(mensagem):
-    # Caminho do txt com todas as máquinas da rede
-    path = r""
+   # Caminho do txt com todas as máquinas da rede
+    path = r"C:\Users\suporte.2.WEBCERTIFICADOS\Desktop\Enviar mensagem rede\Users - Copia.txt"
     
     # Caminho do PsExec.exe
-    filepath = r""
+    filepath = r"C:\Users\suporte.2.WEBCERTIFICADOS\Downloads\PsExec.exe"
     
     # Criar script PowerShell dinamicamente
     script_powershell = fr"""
@@ -44,18 +24,16 @@ foreach ($computador in $computadores) {{
     try:
         subprocess.run(["powershell.exe", "-ExecutionPolicy", "Bypass", "-Command", script_powershell], check=True)
     except subprocess.CalledProcessError as e:
-        # Mostra o erro caso de
         print(f"Erro ao executar script PowerShell: {e}")
+    finally:
+        print('Todas as mensagens enviadas.')
 
 
 def enviar_mensagem():
-    # Mensagem de entrada do usuário
     mensagem = entry_mensagem.get("1.0", tk.END)
     
-    # Faz o procedimento de entrar no servidor
-    nome_aplicativo = 'Conexao'
-    senha = ''
-    procedimento_entrar_servidor(nome_aplicativo, senha, mensagem)
+    # Aqui você pode adicionar a lógica para enviar a mensagem
+    enviar_mensagem_servidor(mensagem)
 
 
 # Interface Gráfica
