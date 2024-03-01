@@ -6,6 +6,7 @@ import json
 import atexit
 import os
 import time
+import random
 from styles import *
 from pathlib import Path
 from datetime import datetime
@@ -36,7 +37,14 @@ def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(
         os.path.abspath(__file__)))
+   
     return os.path.join(base_path, relative_path)
+
+
+def carregar_corpo_email():
+    with open("corpo_email.html", "r") as file:
+        return file.read()
+
 
 # Define a função para escrever no log de enviados
 def escrever_envio(mensagem):
@@ -48,6 +56,7 @@ def escrever_envio(mensagem):
     # Escreve os logs no arquivo
     with open("enviados.txt", "a") as log_file:
         log_file.write(f"{mensagem}\n")
+         
             
 # Define a função para escrever no log de erros
 def escrever_erro(mensagem):
@@ -60,11 +69,13 @@ def escrever_erro(mensagem):
     with open("erros.txt", "a") as log_file:
         log_file.write(f"{mensagem}\n")
 
+
 # Função para limpar a tela do console
 def limpar_tela():
     # Verifica o sistema operacional para determinar o comando apropriado para limpar a tela, espera 3 segundos antes disso
     time.sleep(3)
     os.system('cls' if os.name == "nt" else "clear")
+
 
 class EmailSenderThread(QThread):
     
@@ -85,7 +96,7 @@ class EmailSenderThread(QThread):
     update_progress_signal = pyqtSignal(int)
 
 
-    def __init__(self, remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html, intervalo_envio):
+    def __init__(self, remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html, intervalo_envio, numero_whatsapp):
         super().__init__()
         # Parâmetros para o envio de e-mails
         self.remetente = remetente
@@ -96,7 +107,42 @@ class EmailSenderThread(QThread):
         self.titulo_html = titulo_html
         self.mensagem_html = mensagem_html
         self.intervalo_envio = intervalo_envio
+        self.redirecionar_whatsapp = numero_whatsapp
+        
+        
+    def obter_nome_produto(self, email_destino):
+        # Verifica se o e-mail de destino existe na planilha
+        if email_destino in self.df_emails['E-mail'].values:
+            # Encontre o nome e o produto correspondentes ao e-mail de destino na planilha
+            nome = self.df_emails.loc[self.df_emails['E-mail'] == email_destino, 'Nome'].iloc[0]
+            produto = self.df_emails.loc[self.df_emails['E-mail'] == email_destino, 'Produto'].iloc[0]
+            return nome, produto
+        else:
+            # Retorna None se o e-mail de destino não for encontrado na planilha
+            return None, None
+    
 
+    def atualizar_mensagem(self, email_destino, titulo_html, mensagem_html, numero_whatsapp):
+        # Obtém o nome e o produto correspondentes ao e-mail de destino
+        nome, produto = self.obter_nome_produto(email_destino)
+         
+        # Verifica se nome e produto foram encontrados
+        if nome is not None:
+            mensagem_html = mensagem_html.replace('{nome}', str(nome))
+            titulo_html = titulo_html.replace('{nome}', str(nome))
+        if produto is not None:
+            mensagem_html = mensagem_html.replace('{produto}', str(produto))
+            titulo_html = titulo_html.replace('{produto}', str(produto))
+        
+        # Substitui o marcador de posição do número do WhatsApp na mensagem HTML
+        mensagem_html = mensagem_html.replace('{numero}', str(numero_whatsapp))
+        
+        # Substitui o marcador de posição do número do WhatsApp no link de redirecionamento
+        link_whatsapp = f"https://api.whatsapp.com/send?phone={numero_whatsapp}&text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20tirar%20algumas%20d%C3%BAvidas"
+            
+        # Retorna a mensagem original se nome ou produto não forem encontrados
+        return titulo_html, mensagem_html, link_whatsapp
+    
 
     def run(self):
         # Utilizando a variável global hora_atual
@@ -106,91 +152,43 @@ class EmailSenderThread(QThread):
         servidor_smtp = 'smtp.gmail.com'
         porta_smtp = 587
 
-        # Corpo do e-mail em formato HTML
-        corpo_email = f"""
-        <head>
-            <style>
-                * {{
-                    margin: 0;
-                    padding: 0;
-                }}
-                body {{
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 20px;
-                    width: 100%;
-                }}
-                h1 {{
-                    color: #131A1D;
-                    text-align: center;
-                    padding-top: 30px;
-                }}
-                hr {{
-                    margin: 20px;
-                }}
-                p {{
-                    color: #131A1D;
-                    text-align: justify;
-                    font-size: 16px;
-                }}
-                button {{
-                    all: unset;
-                    width: 120px;
-                    height: 50px;
-                    background-color: #03738C;
-                    border-radius: 10px;
-                    text-align: center;
-                    margin: auto;
-                }}
-                a {{
-                    color: white;
-                    text-decoration: none;
-                    font-weight: bold;
-                    font-size: 18px;
-                }}
-                .corpo_principal {{
-                    background-color: #DFEDF2;
-                    max-width: 500px; /* Largura máxima para controle de layout */
-                    width: 90%; /* Definindo a largura em porcentagem para ser responsiva */
-                    margin: 0 auto; /* Centralizar o elemento */
-                    height: 500px; /* Altura fixa ou pode ser ajustada dinamicamente conforme necessário */
-                    display: flex;
-                    flex-direction: column;
-                    padding: 10px;
-                    border-radius: 10px;
-                    justify-content: space-between;
-                    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.651);
-                }}
-            </style>
-        </head>
-            <div class="corpo_principal">
-                <center>
-                    <div>
-                        <h1>{self.titulo_html}</h1>
-                        <hr/>
-                        <p>{self.mensagem_html}</p>
-                    </div>
-                </center>
-            </div>
-        """
-
         # Nome da coluna que armazenará o status do envio na planilha
         status_coluna = 'STATUS'
+        
+        # Chamada de função que carrega o corpo do email
+        corpo_email_original = carregar_corpo_email()
 
         # Itera sobre os destinatários para enviar os e-mails
         for i, email_destino in enumerate(self.destinatarios):
+            corpo_email = corpo_email_original
+            
+            # Atualiza a mensagem de e-mail com o nome e o produto correspondentes ao destinatário atual
+            novo_titulo, nova_mensagem, link_whatsapp = self.atualizar_mensagem(email_destino, self.titulo_html, self.mensagem_html, self.redirecionar_whatsapp)
+            
+            # Substitui os marcadores de posição no corpo do e-mail pelos valores correspondentes
+            corpo_email = corpo_email.replace("{titulo_html}", novo_titulo)
+            corpo_email = corpo_email.replace("{mensagem_html}", nova_mensagem)
+            
+            # Substitui o link de redirecionamento no corpo do e-mail
+            corpo_email = corpo_email.replace("{link_whatsapp}", link_whatsapp)
 
             # Configuração do e-mail
             msg = MIMEMultipart()
+            
+            # Mescla o corpo padrão do e-mail com a nova mensagem atualizada
             corpo_mensagem = MIMEText(corpo_email, 'html')
+            
             msg.attach(corpo_mensagem)
             msg['To'] = email_destino
             msg['Subject'] = self.assunto
             msg['From'] = self.remetente
             password = self.senha
-
+            
+            # Pega a hora atual
             hora_atual = datetime.now()
+            
+            # Randomiza os intervalos de tempo
+            self.intervalo_envio = random.randint(self.intervalo_envio, 60)
 
             try:
                 # Tenta enviar o e-mail
@@ -202,15 +200,15 @@ class EmailSenderThread(QThread):
                 # Atualiza a planilha e emite sinal de sucesso
                 self.df_emails.loc[self.df_emails['E-mail'] == email_destino, status_coluna] = 'SUCESSO'
                 self.df_emails.to_excel('Enviar E-mails.xlsx', index=False)
-                mensagem_de_envio = f'\nE-mail enviado para {email_destino} às {hora_atual.strftime("%H:%M:%S")}, com {self.intervalo_envio}s de intervalo\n'
+                mensagem_de_envio = f'\nE-mail enviado para {email_destino} dia {hora_atual.strftime("%d")} às {hora_atual.strftime("%H:%M:%S")}, com {self.intervalo_envio}s de intervalo.\n'
                 escrever_envio(mensagem_de_envio)
                 limpar_tela()
-                self.update_status_signal.emit(mensagem_de_envio)
+                self.update_status_signal.emit(mensagem_de_envio + f'\nEnviados: {i+1}')
 
             except Exception as e:
                 # Em caso de erro, atualiza a planilha e emite sinal de erro
                 self.df_emails.loc[self.df_emails['E-mail'] == email_destino, status_coluna] = 'ERRO'
-                mensagem_de_erro = f'\nErro ao enviar e-mail para {email_destino} ás {hora_atual.strftime("%H:%M:%S")}: {e}\n'
+                mensagem_de_erro = f'\nErro ao enviar e-mail para {email_destino} dia {hora_atual.strftime("%d")} ás {hora_atual.strftime("%H:%M:%S")}: {e}\n'
                 escrever_erro(mensagem_de_erro)
                 limpar_tela()
                 print(mensagem_de_erro)
@@ -264,7 +262,7 @@ class EmailSenderApp(QWidget):
         # Desabilita o o botão de maximizar a tela
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)
         # Define o tamanho da janela
-        self.setGeometry(100, 100, 500, 500)
+        self.setGeometry(100, 100, 350, 350)
 
         self.email_remetente_label = QLabel('E-mail Remetente: (Utilize um email do Google)')  # Cria um rótulo para o campo de e-mail
         self.email_remetente_edit = QLineEdit()  # Cria um campo de entrada para o e-mail
@@ -282,6 +280,7 @@ class EmailSenderApp(QWidget):
         self.planilha_path_edit.setPlaceholderText('.xlsx')  # Define um texto de espaço reservado para o campo de caminho da planilha
 
         self.choose_planilha_button = QPushButton('Escolher')  # Cria um botão para escolher a planilha
+        self.choose_planilha_button.clicked.connect(self.choose_planilha)
         self.baixar_planilha = QPushButton('Baixar Planilha Base')  # Cria um botão para baixar a planilha base
         self.baixar_planilha.clicked.connect(self.baixar_planilha_base)  # Conecta o botão de download a uma função para baixar a planilha base
 
@@ -303,10 +302,6 @@ class EmailSenderApp(QWidget):
         self.titulo_html_label = QLabel('Título:')  # Cria um rótulo para o campo de título
         self.titulo_html_edit = QLineEdit()  # Cria um campo de entrada para o título
         self.titulo_html_edit.setPlaceholderText('Título do E-mail')  # Define um texto de espaço reservado para o campo de título
-
-        self.mensagem_html_label = QLabel('Mensagem:')  # Cria um rótulo para o campo de mensagem
-        self.mensagem_html_edit = QTextEdit()  # Cria um campo de entrada para a mensagem
-        self.mensagem_html_edit.setPlaceholderText('Mensagem principal do E-mail')  # Define um texto de espaço reservado para o campo de mensagem
         
         # Seção para adicionar os três campos de entrada para largura, altura e URL da imagem
         self.largura_label = QLabel('Largura:')  
@@ -324,20 +319,31 @@ class EmailSenderApp(QWidget):
         # Botão para inserir a tag <img> com os valores dos campos
         self.inserir_imagem_button = QPushButton('Inserir Imagem')
         self.inserir_imagem_button.clicked.connect(self.inserir_imagem)
+        
+        self.inserir_nome_button = QPushButton('Inserir Nome')
+        self.inserir_nome_button.clicked.connect(self.inserir_nome_variavel)
+        self.inserir_tipo_produto_button = QPushButton('Inserir Produto')
+        self.inserir_tipo_produto_button.clicked.connect(self.inserir_produto_variavel)
+        
+        self.mensagem_html_label = QLabel('Mensagem:')  # Cria um rótulo para o campo de mensagem
+        self.mensagem_html_edit = QTextEdit()  # Cria um campo de entrada para a mensagem
+        self.mensagem_html_edit.setPlaceholderText('Mensagem principal do E-mail')  # Define um texto de espaço reservado para o campo de mensagem
+        
+        self.redirecionar_whatsapp_label = QLabel('Número para redirecionar:')
+        self.redirecionar_whatsapp_edit = QLineEdit()
+        self.redirecionar_whatsapp_edit.setPlaceholderText('O número precisa ser exatamente igual o do whatsapp')
 
         self.iniciar_button = QPushButton('Iniciar Envio')  # Cria um botão para iniciar o envio
         self.iniciar_button.setStyleSheet(f'background-color: {cor_azul_escuro}')  # Define o estilo do botão de início
+        self.iniciar_button.clicked.connect(self.iniciar_envio)
 
         # Layout
         layout = QVBoxLayout()  # Cria um layout vertical
         layout.addWidget(self.email_remetente_label)  # Adiciona o rótulo de e-mail ao layout
         layout.addWidget(self.email_remetente_edit)  # Adiciona o campo de e-mail ao layout
-
         layout.addWidget(self.senha_label)  # Adiciona o rótulo de senha ao layout
         layout.addWidget(self.senha_edit)  # Adiciona o campo de senha ao layout
-
         layout.addWidget(self.show_password_button)  # Adiciona o botão de seleção de mostrar senha ao layout
-        
         layout.addWidget(self.planilha_path_label) # Adiciona o rótulo de caminho da planilha ao layout
         layout.addWidget(self.planilha_path_edit)  # Adiciona o campo de caminho da planilha ao layout
 
@@ -345,49 +351,57 @@ class EmailSenderApp(QWidget):
         layout_botoes_planilha.addWidget(self.choose_planilha_button)  # Adiciona o botão de escolha da planilha ao layout
         layout_botoes_planilha.addWidget(self.baixar_planilha)  # Adiciona o botão de download da planilha ao layout
         
+        layout_intervalo_env = QHBoxLayout()
+        layout_intervalo_env.addWidget(self.numero_envios_label)  # Adiciona o rótulo de número de envios ao layout
+        layout_intervalo_env.addWidget(self.numero_envios_edit)  # Adiciona o campo de número de envios ao layout
+        layout_intervalo_env.addWidget(self.intervalo_envio_label) # Adiciona widgets relacionados ao intervalo entre envios ao layout
+        layout_intervalo_env.addWidget(self.intervalo_envio_edit) # Adiciona widgets relacionados ao intervalo entre envios ao layout
+        
+        # Adicione os campos de número de envios e tempo de envios  
+        layout.addLayout(layout_intervalo_env)
+        
         # Adicione os botões de escolher a planilha e baixá-la
         layout.addLayout(layout_botoes_planilha)
 
-        layout_inter_env = QHBoxLayout()
-        layout_inter_env.addWidget(self.numero_envios_label)  # Adiciona o rótulo de número de envios ao layout
-        layout_inter_env.addWidget(self.numero_envios_edit)  # Adiciona o campo de número de envios ao layout
-        # Adiciona widgets relacionados ao intervalo entre envios ao layout
-        layout_inter_env.addWidget(self.intervalo_envio_label)
-        layout_inter_env.addWidget(self.intervalo_envio_edit)
-        
-        # Adicione os campos de número de envios e tempo de envios  
-        layout.addLayout(layout_inter_env)
-
-        layout.addWidget(self.assunto_label)  # Adiciona o rótulo de assunto ao layout
-        layout.addWidget(self.assunto_edit)  # Adiciona o campo de assunto ao layout
-
-        layout.addWidget(self.titulo_html_label)  # Adiciona o rótulo de título ao layout
-        layout.addWidget(self.titulo_html_edit)  # Adiciona o campo de título ao layout
+        layout_assunto_titulo = QHBoxLayout()
+        layout_assunto_titulo.addWidget(self.assunto_label)  # Adiciona o rótulo de assunto ao layout
+        layout_assunto_titulo.addWidget(self.assunto_edit)  # Adiciona o campo de assunto ao layout
+        layout_assunto_titulo.addWidget(self.titulo_html_label)  # Adiciona o rótulo de título ao layout
+        layout_assunto_titulo.addWidget(self.titulo_html_edit)  # Adiciona o campo de título ao layout
         
         # Layout para os campos de entrada e o botão
-        layout_imagem = QHBoxLayout()
-        layout_imagem.addWidget(self.largura_label)
-        layout_imagem.addWidget(self.largura_edit)
-        layout_imagem.addWidget(self.altura_label)
-        layout_imagem.addWidget(self.altura_edit)
-        layout_imagem.addWidget(self.src_label)
-        layout_imagem.addWidget(self.src_edit)
-        layout_imagem.addWidget(self.inserir_imagem_button)
+        #layout_imagem = QHBoxLayout()
+        #layout_imagem.addWidget(self.largura_label)
+        #layout_imagem.addWidget(self.largura_edit)
+        #layout_imagem.addWidget(self.altura_label)
+        #layout_imagem.addWidget(self.altura_edit)
+        #layout_imagem.addWidget(self.src_label)
+        #layout_imagem.addWidget(self.src_edit)
+        #layout_imagem.addWidget(self.inserir_imagem_button)
+        
+        # Layout para os campos de botões inserir nome e produto
+        layout_nome_e_prod = QHBoxLayout()
+        layout_nome_e_prod.addWidget(self.inserir_nome_button)
+        layout_nome_e_prod.addWidget(self.inserir_tipo_produto_button)
+        
+        # Adicione os campos de assunto e email  
+        layout.addLayout(layout_assunto_titulo)
         
         # Adicione os campos de largura, altura e URL da imagem ao layout principal
-        layout.addLayout(layout_imagem)
-
+        #layout.addLayout(layout_imagem)
+        
         layout.addWidget(self.mensagem_html_label)  # Adiciona o rótulo de mensagem ao layout
         layout.addWidget(self.mensagem_html_edit)  # Adiciona o campo de mensagem ao layout
+        layout.addWidget(self.redirecionar_whatsapp_label) # Adiciona o rótulo de redirecionar ao layout
+        layout.addWidget(self.redirecionar_whatsapp_edit) # Adiciona o campo de redirecionar ao layout
+        
+        # Adicione os botões de inserir nome e produto ao layout principal
+        layout.addLayout(layout_nome_e_prod)
         
         layout.addWidget(self.iniciar_button)  # Adiciona o botão de início ao layout
 
         # Adicione o layout principal à janela
         self.setLayout(layout)
-
-        # Conectar sinais a slots
-        self.choose_planilha_button.clicked.connect(self.choose_planilha)
-        self.iniciar_button.clicked.connect(self.iniciar_envio)
 
         self.show()
         
@@ -407,6 +421,7 @@ class EmailSenderApp(QWidget):
 
         # Define a posição da janela para centralizá-la
         self.move(x, y)
+    
     
     def toggle_echo_mode(self, state):
         # Alterna entre mostrar ou ocultar caracteres na entrada de senha com base no estado da caixa de seleção
@@ -428,7 +443,7 @@ class EmailSenderApp(QWidget):
         
         hora_atual = datetime.now()
         
-        print(f'Iniciando envio de e-mails às {hora_atual.strftime("%H:%M:%S")}')
+        print(f'Iniciando envio de e-mails dia {hora_atual.strftime("%d")} às {hora_atual.strftime("%H:%M:%S")}')
             
         QMessageBox.information(self, 'Envio Iniciado', 'Começando envio de e-mails')
 
@@ -441,11 +456,12 @@ class EmailSenderApp(QWidget):
         assunto = self.assunto_edit.text()
         titulo_html = self.titulo_html_edit.text()
         mensagem_html = self.mensagem_html_edit.toPlainText()
+        numero_whatsapp = self.redirecionar_whatsapp_edit.text()
         remetente = self.email_remetente_edit.text()
         senha = self.senha_edit.text()
 
         # Verifica se o intervalo de envio é menor que 30 segundos
-        if intervalo_envio < 30:
+        if intervalo_envio < 30 or intervalo_envio > 60:
             QMessageBox.warning(self, 'Valor Inválido', 'O intervalo entre envios deve ser no mínimo 30 segundos.')
             self.set_widgets_enabled(True)
             return
@@ -455,7 +471,7 @@ class EmailSenderApp(QWidget):
 
         destinatarios, df_emails = self.ler_emails(planilha_path)
 
-        self.email_sender_thread = EmailSenderThread(remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html, intervalo_envio)
+        self.email_sender_thread = EmailSenderThread(remetente, senha, destinatarios, df_emails, assunto, titulo_html, mensagem_html, intervalo_envio, numero_whatsapp)
         self.email_sender_thread.update_status_signal.connect(self.atualizar_status)
         self.email_sender_thread.update_progress_signal.connect(self.atualizar_progresso)
         
@@ -480,9 +496,11 @@ class EmailSenderApp(QWidget):
             ('Senha', self.senha_edit.text()),
             ('Caminho da Planilha', self.planilha_path_edit.text()),
             ('Número de Envios', self.numero_envios_edit.text()),
+            ('Intervalo entre Envios (segundos)', self.intervalo_envio_edit.text()),
             ('Assunto', self.assunto_edit.text()),
             ('Título', self.titulo_html_edit.text()),
-            ('Mensagem', self.mensagem_html_edit.toPlainText())
+            ('Mensagem', self.mensagem_html_edit.toPlainText()),
+            ('Número para redirecionar', self.redirecionar_whatsapp_edit.text()),
         ]
 
         # Itera sobre os campos
@@ -552,9 +570,15 @@ class EmailSenderApp(QWidget):
         self.iniciar_button,
         self.mensagem_html_edit,
         self.intervalo_envio_edit,
+        self.largura_edit,
+        self.altura_edit,
+        self.inserir_imagem_button,
+        self.inserir_nome_button,
+        self.inserir_tipo_produto_button,
+        self.redirecionar_whatsapp_edit,
         ]
         
-        for index, item in enumerate(lista_desabilitar_ou_habilitar):
+        for _, item in enumerate(lista_desabilitar_ou_habilitar):
             item.setEnabled(enabled)
             
         
@@ -571,18 +595,16 @@ class EmailSenderApp(QWidget):
         if 'E-mail' in df_emails.columns:
             tamanho_antes = len(df_emails)
 
-            # Remove duplicatas mantendo apenas a primeira ocorrência
+            # Remove duplicatas mantendo apenas a primeira ocorrência, considerando as colunas 'E-mail', 'Nome' e 'Produto'
             df_sem_duplicatas = df_emails.drop_duplicates(
-                subset=['E-mail'], keep='first')
+                subset=['E-mail', 'Nome', 'Produto'], keep='first')
 
             tamanho_depois = len(df_sem_duplicatas)
 
             if tamanho_antes != tamanho_depois:
-                print(f"\nE-mails duplicados foram removidos! Agora são: {tamanho_depois}\n")
+                print(f"\nAlgumas entradas duplicadas foram removidas! Agora são: {tamanho_depois}\n")
             else:
-                emails = df_emails['E-mail'].tolist()
-                print('\nNão há E-mails duplicados na planilha!\n')
-                return emails, df_emails
+                print('\nNão há entradas duplicadas na planilha!\n')
 
             # Salva a planilha sem duplicatas
             df_sem_duplicatas.to_excel('Enviar E-mails.xlsx', index=False)
@@ -590,10 +612,8 @@ class EmailSenderApp(QWidget):
             # Retorna a lista de e-mails e o dataframe
             return df_sem_duplicatas['E-mail'].tolist(), df_sem_duplicatas
         else:
-            emails = df_emails['E-mail'].tolist()
-            print('\nNão há E-mails duplicados na planilha!\n')
-            # Retorna a lista de e-mails e o dataframe
-            return emails, df_emails
+            print('\nA planilha não contém a coluna "E-mail"!\n')
+            return [], pd.DataFrame()
        
         
     def baixar_planilha_base(self):
@@ -602,7 +622,7 @@ class EmailSenderApp(QWidget):
             "https://www.dropbox.com/scl/fi/86uil93uepe3sssd7yxm8/Enviar-E-mails.xlsx?rlkey=inogq1zqcm3xjame930yksm75&dl=1"
         )
        
-       
+
     def inserir_imagem(self):
         # Verifica se todos os campos estão preenchidos
         if not self.largura_edit.text() or not self.altura_edit.text() or not self.src_edit.text():
@@ -621,8 +641,19 @@ class EmailSenderApp(QWidget):
         mensagem_atual = self.mensagem_html_edit.toPlainText()
         nova_mensagem = mensagem_atual + tag_img
         self.mensagem_html_edit.setPlainText(nova_mensagem) 
-       
+    
+    
+    def inserir_nome_variavel(self):
+        # Insere uma variável para o nome na mensagem de e-mail
+        self.mensagem_html_edit.insertPlainText('{nome}')
+        self.titulo_html_edit.setText('{nome}')
+
+    def inserir_produto_variavel(self):
+        # Insere uma variável para o produto na mensagem de e-mail
+        self.mensagem_html_edit.insertPlainText('{produto}')
+        self.titulo_html_edit.setText('{produto}')
         
+
     def verificar_arquivo_credenciais(self):
         # Verifica se o arquivo de credenciais existe, senão, cria um novo
         path_credenciais = Path(resource_path('credenciais.json'))
