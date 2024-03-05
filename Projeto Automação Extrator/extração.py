@@ -28,6 +28,7 @@ data_formatada = data.strftime('%H:%M:%S %d/%m/%y')
 url = 'https://casadosdados.com.br/solucao/cnpj/pesquisa-avancada'
 print("\nPreencha as informações para iniciar a extração.\n")
 
+xpath_pesquisar = 'a.button:nth-child(1)'
 xpath_proxima_pagina = '//*[@id="__nuxt"]/div/div[2]/section/div[8]/div/nav/a[2]'
 xpath_cnpj = '//*[@id="__nuxt"]/div/div[2]/section/div/div/div[4]/div/div/div[1]/p[2]'
 xpath_razao_social = '.columns:nth-child(1) > .column:nth-child(2) > p:nth-child(2)'
@@ -112,17 +113,17 @@ def WaitButton(driver, tempo_maximo=600):
 
     try:
         # Aguarde até que o botão seja clicável por até 30 segundos
-        botao = WebDriverWait(driver, tempo_maximo).until(
+        botao_clicado = WebDriverWait(driver, tempo_maximo).until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'a.button.is-success.is-medium'))
+                (By.CSS_SELECTOR, xpath_pesquisar))
         )
 
         # Adiciona um ouvinte de evento para detectar o clique do mouse
-        driver.execute_script('''
-            document.querySelector('a.button.is-success.is-medium').addEventListener('click', function() {
+        driver.execute_script(f"""
+            document.querySelector('{xpath_pesquisar}').addEventListener('click', function() {{
                 window.buttonClicked = true;
-            });
-        ''')
+            }});
+        """)
 
         # Espera até que o tempo máximo seja atingido ou até que alguém clique no botão
         start_time = time.time()
@@ -167,7 +168,7 @@ def clicar_proxima_pagina(xpath_proxima_pagina):
 
         if botao_proxima_pagina and 'is-disabled' not in botao_proxima_pagina.get_attribute('class'):
             botao_proxima_pagina.click()
-            time.sleep(1.5)
+            time.sleep(2)
             return True
     except Exception as e:
         time.sleep(3)
@@ -247,7 +248,7 @@ def obter_dados_formatados(elemento, formatacao):
 
 # Loop para clicar na próxima página até que não haja mais páginas (Não tirar daqui, pois não funciona se tirar)
 while clicar_proxima_pagina(xpath_proxima_pagina):
-    time.sleep(3)
+    time.sleep(4)
     pass
 
 # Configuração do WebDriver
@@ -336,31 +337,30 @@ for i, row in df.iterrows():
             chave: obter_dados_formatados(elemento, formatacao)
             for chave, (elemento, formatacao) in elementos_e_formatacoes.items()
         })
-        
-        # Salva os dados a cada 5 linhas processadas
-        if (i + 1) % 5 == 0:
-            
+
+    # Salva os dados a cada 5 linhas processadas
+        if (i + 1) % 1 == 0:
+
             # Verifica se o diretório 'Extração' existe, se não, cria
             if not os.path.exists('Extração'):
-                    os.makedirs('Extração')
-                    
+                os.makedirs('Extração')
+
             excel_path = './Extração/Extração CNPJ.xlsx'
-            
+
             # Verifica se o arquivo Excel já existe
             if os.path.exists(excel_path):
                 # Se existir, lê o arquivo Excel e concatena com os novos dados
                 df_existente = pd.read_excel(excel_path)
-                df_final = pd.concat([df_existente, pd.DataFrame(dados_armazenados_planilha)], ignore_index=True)
+                df_final = pd.concat([df_existente, pd.DataFrame(
+                    dados_armazenados_planilha)], ignore_index=True)
             else:
                 df_final = pd.DataFrame(dados_armazenados_planilha)
-            
+
             # Salva os dados no arquivo Excel
             df_final.to_excel(excel_path, index=False)
-            
             dados_armazenados_planilha = []
-            
-            print(f"\nSalvos dados das primeiras {i + 1} empresas.")
-    
+            print(f"{i + 1} empresas foram salvas na planilha!")
+
     except Exception as e:
         print(
             f"\nErro ao extrair informações de: {url_completa} às {data_atualizada}")

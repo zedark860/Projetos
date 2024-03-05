@@ -175,7 +175,9 @@ def enviar_contracheques(login, senha, contatos):
                         # Pega o primeiro nome encontrado na coluna
                         nome_encontrado = WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                             (By.XPATH, '//*[@id="tblBuscarParticipantes"]/tbody/tr/td[2]'))).text
-
+                        
+                        time.sleep(3)
+                        
                         # Verifica se o nome encontrado na tabela é diferente do nome do colaborador
                         if nome_encontrado.strip() != nome_colaborador:
                             print(f"O nome encontrado ({nome_encontrado}) é diferente do nome do colaborador ({nome_colaborador}). Pulando para o próximo colaborador.")
