@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pathlib import Path
 import time
 import pandas as pd
 import os
@@ -15,7 +16,8 @@ url_site = 'https://assinarweb.com.br/arweb/login'
 
 login = ''
 senha = ''
-diretorio_pdf = r''
+diretorio_pdf = os.getcwd()
+diretorio_pdf = diretorio_pdf + r'\PDF'
 arquivos_pdf = glob.glob(os.path.join(diretorio_pdf, '*.pdf'))
 arquivos = os.listdir(diretorio_pdf)
 
@@ -39,13 +41,12 @@ def ler_planilha(planilha_path, coluna_nome):
 
 
 def encontrar_pdf(nome):
-    diretorio_pdfs = r''
     nome = nome.strip() # Remover espaços extras no início e no final do nome
     extensao = '.pdf'
 
-    caminho_completo = os.path.join(diretorio_pdfs, f"{nome}{extensao}")
+    caminho_completo = os.path.join(diretorio_pdf, f"{nome}{extensao}")
 
-    print("Arquivo PDF sendo procurado:", caminho_completo)
+    print("\nArquivo PDF sendo procurado:", caminho_completo)
 
     if os.path.exists(caminho_completo):
         return caminho_completo
@@ -55,15 +56,25 @@ def encontrar_pdf(nome):
 
 # Define a função para escrever no log
 def escrever_log(mensagem):
+    arquivo_enviados = Path('enviados.txt')
+    # Cria o arquivo se ele não existir
+    if not arquivo_enviados.exists():
+        arquivo_enviados.touch()
+        
+    # Escreve os logs no arquivo
     with open("enviados.txt", "a") as log_file:
         log_file.write(f"{mensagem}\n")
-    print(f"Log escrito: {mensagem}")
 
 
 def escrever_erro(mensagem):
+    arquivo_erros = Path('erros.txt')
+    # Cria o arquivo se ele não existir
+    if not arquivo_erros.exists():
+        arquivo_erros.touch()
+            
+    # Escreve os logs no arquivo
     with open("erros.txt", "a") as log_file:
-        log_file.write(f"{mensagem}\n")
-    print(f"Erro escrito: {mensagem}")   
+        log_file.write(f"{mensagem}\n") 
 
 
 def enviar_contracheques(login, senha, contatos):
@@ -94,7 +105,7 @@ def enviar_contracheques(login, senha, contatos):
         # Itera sobre os colaboradores ativos e realiza a automação no site
         for _ , row in contatos.iterrows():
             nome_colaborador = row["NOME"]
-            print(f"Processando: {nome_colaborador}")
+            print(f"\nProcessando: {nome_colaborador}")
 
             try:
                 time.sleep(3)
@@ -123,7 +134,7 @@ def enviar_contracheques(login, senha, contatos):
                 # Encontra o caminho do arquivo PDF usando a função encontrar_pdf
                 caminho_pdf = encontrar_pdf(nome_colaborador)
 
-                print(f"Caminho do PDF para {nome_colaborador}: {caminho_pdf}")
+                print(f"\nCaminho do PDF para {nome_colaborador}: {caminho_pdf}")
 
                 if caminho_pdf:
                         # Clique na caixa de diálogo para torná-la ativa
@@ -157,7 +168,8 @@ def enviar_contracheques(login, senha, contatos):
                         WebDriverWait(driver, 15).until(EC.presence_of_element_located(
                             (By.XPATH, '//*[@id="tblBuscarParticipantes_filter"]/label/input'))).click()
                         
-                        time.sleep(5)
+                        time.sleep(3)
+                        
                         # Pega o campo de filtro e armazena em uma variável
                         search_input = driver.find_element(
                             By.XPATH, '//*[@id="tblBuscarParticipantes_filter"]/label/input')
@@ -180,7 +192,7 @@ def enviar_contracheques(login, senha, contatos):
                         
                         # Verifica se o nome encontrado na tabela é diferente do nome do colaborador
                         if nome_encontrado.strip() != nome_colaborador:
-                            print(f"O nome encontrado ({nome_encontrado}) é diferente do nome do colaborador ({nome_colaborador}). Pulando para o próximo colaborador.")
+                            print(f"\nO nome encontrado ({nome_encontrado}) é diferente do nome do colaborador ({nome_colaborador}). Pulando para o próximo colaborador.")
                             
                             # Clica no botão para fechar a tela de opção que está na frente da principal
                             WebDriverWait(driver, 15).until(EC.presence_of_element_located(
@@ -301,3 +313,5 @@ except Exception as e:
 
 # Chamada da função com os novos valores de login e senha
 enviar_contracheques(login, senha, df_contatos)
+
+print("\nContracheques enviados!!!\n")
