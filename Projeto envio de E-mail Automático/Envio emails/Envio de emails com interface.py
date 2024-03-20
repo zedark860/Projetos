@@ -29,7 +29,6 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
 from PyQt5.QtGui import QIcon, QIntValidator
 
-
 # Definindo variável de hora atual
 hora_atual = None
 
@@ -42,7 +41,7 @@ def resource_path(relative_path):
 
 
 def carregar_corpo_email():
-    with open("corpo_email.html", "r") as file:
+    with open(resource_path("corpo_email.html"), "r") as file:
         return file.read()
 
 
@@ -57,7 +56,7 @@ def escrever_envio(mensagem):
     with open("enviados.txt", "a") as log_file:
         log_file.write(f"{mensagem}\n")
          
-            
+
 # Define a função para escrever no log de erros
 def escrever_erro(mensagem):
     # Cria o arquivo se ele não existir
@@ -138,7 +137,7 @@ class EmailSenderThread(QThread):
         mensagem_html = mensagem_html.replace('{numero}', str(numero_whatsapp))
         
         # Substitui o marcador de posição do número do WhatsApp no link de redirecionamento
-        link_whatsapp = f"https://api.whatsapp.com/send?phone={numero_whatsapp}&text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20tirar%20algumas%20d%C3%BAvidas"
+        link_whatsapp = f"https://api.whatsapp.com/send?phone={numero_whatsapp}&text=Ol%C3%A1!%20Vim%20pelo%20email%20e%20gostaria%20de%20tirar%20algumas%20d%C3%BAvidas"
             
         # Retorna a mensagem original se nome ou produto não forem encontrados
         return titulo_html, mensagem_html, link_whatsapp
