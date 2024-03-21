@@ -29,7 +29,7 @@ url = 'https://casadosdados.com.br/solucao/cnpj/pesquisa-avancada'
 print("\nPreencha as informações para iniciar a extração.\n")
 
 xpath_pesquisar = 'a.button:nth-child(1)'
-xpath_proxima_pagina = '//*[@id="__nuxt"]/div/div[2]/section/div[8]/div/nav/a[2]'
+xpath_proxima_pagina = 'pagination-next'
 xpath_cnpj = '//*[@id="__nuxt"]/div/div[2]/section/div/div/div[4]/div/div/div[1]/p[2]'
 xpath_razao_social = '.columns:nth-child(1) > .column:nth-child(2) > p:nth-child(2)'
 xpath_nome_fantasia = '//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[1]/div[3]/p[2]'
@@ -164,10 +164,10 @@ def extrair_dados():
 def clicar_proxima_pagina(xpath_proxima_pagina):
     try:
         botao_proxima_pagina = WebDriverWait(driver, 5).until(
-            EC.element_to_be_clickable((By.XPATH, xpath_proxima_pagina)))
+            EC.element_to_be_clickable((By.CLASS_NAME, xpath_proxima_pagina)))
 
         if botao_proxima_pagina and 'is-disabled' not in botao_proxima_pagina.get_attribute('class'):
-            botao_proxima_pagina.click()
+            driver.execute_script("arguments[0].click();", botao_proxima_pagina)
             time.sleep(2)
             return True
     except Exception as e:
@@ -248,7 +248,7 @@ def obter_dados_formatados(elemento, formatacao):
 
 # Loop para clicar na próxima página até que não haja mais páginas (Não tirar daqui, pois não funciona se tirar)
 while clicar_proxima_pagina(xpath_proxima_pagina):
-    time.sleep(4)
+    time.sleep(3.5)
     pass
 
 # Configuração do WebDriver
